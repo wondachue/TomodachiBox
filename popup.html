@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+        <style>
+          #bg{
+            background-image: url("box.jpg");
+            width: 400px;
+            height: 300px;
+          }
+          .roll{
+            background-image: url("roll.gif");
+          }
+          .ui-autocomplete {
+            max-height: 100px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+          }
+          * html .ui-autocomplete {
+            height: 100px;
+          }
+        </style>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="jquery-ui-1.11.3.custom/jquery-ui.css">
+        <script src="jquery-ui-1.11.3.custom/external/jquery/jquery.js"></script>
+        <script src="jquery-ui-1.11.3.custom/jquery-ui.js"></script>
+        <script src="popup.js"></script>
+      <title>Tomodachi Box</title>
+  </head>
+  <body>
+        <div id="title">
+            <h1>Tomodachi Roll!</h1>
+            <div class="ui-widget">
+              <label for="tags">What is your order? </label>
+              <input id="shows">
+              <button type="submit" value="Submit" class="btn btn-default">
+                  <span class="roll" style="vertical-align:middle"></span>
+              </button>
+            </div>  
+        </div>
+        <div id="bg">
+            <button class="btn btn-default">
+                <span class="glyphicon glyphicon-envelope" style="vertical-align:middle"></span>
+            </button>
+        </div>
+        
+  </body>
+</html>
+
