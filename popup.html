@@ -4,10 +4,14 @@
         <style>
           #bg{
             background-image: url("box.jpg");
-            width: 400px;
+            width: 490px;
             height: 300px;
+            overflow-y: scroll;
           }
-          .roll{
+          #show_grid{
+            width : 100%;
+          }
+          .rollIcon{
             background-image: url("roll.gif");
           }
           .ui-autocomplete {
@@ -19,6 +23,47 @@
           * html .ui-autocomplete {
             height: 100px;
           }
+          .container {
+            margin: 3px;
+          }
+          .col{
+            margin-left: 25px;
+            padding: 15px;
+            width: 150px;
+            height: 150px;
+            background: -webkit-linear-gradient(70deg, black, #303030,  #141414);
+            border: 3px solid black;
+            border-radius: 70px;
+            box-shadow: inset 0px 0px 10px white;
+          }
+          .box{
+            background: -webkit-linear-gradient(70deg, black, red, #f2f0ee);
+            border: 3px solid black;
+            box-shadow: inset 0px 0px 12px red;        
+          }
+          .innerbox{
+            background: -webkit-linear-gradient(#990021, black);
+            border: 3px solid black;
+            margin: 7px;
+            padding: 2px;
+          }
+          .roll{
+            margin: 7px;
+            padding: 5px;
+            width: 85%;
+            height: 85%;
+            background: -webkit-linear-gradient(70deg, white, #f2f0ee,  white);
+            border: 3px solid white;
+            border-radius: 50px;
+            box-shadow: inset 0px 0px 10px white;
+            text-align: center;
+            color : red;
+
+          }
+          .row{
+            width: 100%;
+            margin: 10px;
+          }
         </style>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="jquery-ui-1.11.3.custom/jquery-ui.css">
@@ -28,21 +73,25 @@
       <title>Tomodachi Box</title>
   </head>
   <body>
+      <div class = "container">
         <div id="title">
-            <h1>Tomodachi Roll!</h1>
+            <h1 class="text-center">TomodachiBox!</h1>
             <div class="ui-widget">
               <label for="tags">What is your order? </label>
-              <input id="shows">
-              <button type="submit" value="Submit" class="btn btn-default">
-                  <span class="roll" style="vertical-align:middle"></span>
-              </button>
+                <input id="shows">
+                <button type="submit" value="Submit" class="btn btn-default">
+                    <span class="rollIcon" style="vertical-align:middle"></span>
+                </button>
             </div>  
         </div>
         <div id="bg">
-            <button class="btn btn-default">
-                <span class="glyphicon glyphicon-envelope" style="vertical-align:middle"></span>
-            </button>
+          <table id="show_grid">
+          </table>
         </div>
+       <button class="btn btn-default">
+           <span class="glyphicon glyphicon-envelope" style="vertical-align:middle"></span>
+        </button>
+      </div>
         
   </body>
 </html>
