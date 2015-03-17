@@ -4,7 +4,7 @@
         <style>
           #bg{
             background-image: url("box.jpg");
-            width: 490px;
+            width: 100%;
             height: 300px;
             overflow-y: scroll;
           }
@@ -71,21 +71,22 @@
         </style>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="jquery-ui-1.11.3.custom/jquery-ui.css">
+        
         <script src="jquery-ui-1.11.3.custom/external/jquery/jquery.js"></script>
         <script src="jquery-ui-1.11.3.custom/jquery-ui.js"></script>
         <script src="popup.js"></script>
       <title>Tomodachi Box</title>
   </head>
-  <body>
+  <body id="body">
+
       <div class = "container">
         <div id="title">
             <h1 class="text-center">TomodachiBox!</h1>
             <div class="ui-widget">
-              <label for="tags">What is your order? </label>
-                <input id="shows">
-                <button type="submit" value="Submit" class="btn btn-default">
-                    <span class="rollIcon" style="vertical-align:middle"></span>
-                </button>
+              <label for="tags">What is the order? </label>
+                <input type="text" id="shows" placeholder="An Anime show name!">
+                <input type="submit" value="Add to Box" id="addToBox" class="btn btn-default">
+                <br><br>
             </div>  
         </div>
         <div id="bg">
@@ -93,10 +94,10 @@
           </table>
         </div>
        <button class="btn btn-default">
-           <span class="glyphicon glyphicon-envelope" style="vertical-align:middle"></span>
+           <span class="glyphicon glyphicon-envelope" style="vertical-align:middle"> Notify your friends!</span>
         </button>
-      </div>
-        
+      </div> 
+
   </body>
 </html>
 

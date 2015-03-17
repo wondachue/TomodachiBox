@@ -26,9 +26,10 @@ function createTable(){
   }
 }
 function getAllAnimeYears(){
-  for(var i = 1961; i <= 2015; i++){
+  for(var i = 2014; i <= 2015; i++){
     loadWikiData(i);
   }
+  console.log("Done loading wiki shows.");
 }
 function loadShowData(this_num)
 {
@@ -85,3 +86,24 @@ function loadWikiData(year)
     xmlhttp.open("GET","http://en.wikipedia.org/wiki/Category:" + year +"_anime_television_series",true);
     xmlhttp.send();
 }
+
+//EventListener that listens once the extension loads
+document.addEventListener('DOMContentLoaded', function() {
+    var addToBox = document.getElementById('addToBox');
+    
+    addToBox.addEventListener('click', function() {
+        var show = document.getElementById('shows').value;
+        console.log("The user input " + show + " into the show search bar.");
+
+        //This is where the new page will be loaded from!
+        document.getElementById('shows').value = "";
+
+        //checks on input here, making sure it is actually a show
+        //and then adding it to the user's list
+        //chrome.storage.sync.set()  -- the command we will need
+        document.getElementById('bg').innerHTML = "<b>" + show + "</b>";
+    });
+
+    //other button event listeners can go here
+});
+
