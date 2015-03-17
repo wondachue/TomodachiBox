@@ -4,6 +4,11 @@ var show_list = [];
 var images = [];
 var descrips = [];
 
+//For storage and user show list
+var storage = chrome.storage.sync;
+var theshow = 'shows';
+var usershows = {};
+
 $(function() {
     $( "#shows" ).autocomplete({
       source: show_list
@@ -100,10 +105,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
         //checks on input here, making sure it is actually a show
         //and then adding it to the user's list
-        //chrome.storage.sync.set()  -- the command we will need
-        document.getElementById('bg').innerHTML = "<b>" + show + "</b>";
+        var isShow = false;
+        for(var i = 0; i < show_list.length; i++){
+          if(show == show_list[i]){
+            isShow = true;
+            break;
+          }
+        }
+
+        if(isShow){
+          
+                   
+          storage.get(function(usershows){
+            if(typeof(usershows["shows"]) !== 'undefined' && usershows["shows"] instanceof Array) {
+              usershows["shows"].push(show);
+            }
+            else{
+              usershows["shows"] = [show];
+            }
+            chrome.storage.sync.set(usershows);
+          });
+          
+
+          storage.get(theshow,function(result){
+            console.log("The user's current " + theshow + " list : ",result);
+            
+            var list = '';
+            for (var title in result) {
+              list += title + ': ' + result[title]+'; ';
+            }
+            console.log("The current user " + list);
+
+            document.getElementById('bg').innerHTML = "<b>The Personal List Page here?<br><br>This is the show that was input by the user: " + show + "<br><br>The previous user " + list + "</b>";
+
+          })
+
+
+
+          
+        }
+        else{
+          document.getElementById('bg').innerHTML = "<b>The Personal List Page here?<br>Silly you! That wasn't a show >:T</b>";
+        }
+
+
+
+        
     });
 
-    //other button event listeners can go here
+  notifyFriends.addEventListener('click', function() {
+        console.log("The user wants to notify friends of release dates");
+
+        document.getElementById('bg').innerHTML = "<b>Notify Friends Page Here</b>";
+                
+    });
+
 });
 
