@@ -9,6 +9,9 @@ var storage = chrome.storage.sync;
 var theshow = 'shows';
 var usershows = {};
 
+window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
+
+
 $(function() {
     $( "#shows" ).autocomplete({
       source: show_list
@@ -26,11 +29,13 @@ function createTable(){
     var cell2 = row.insertCell(1);
     row.className = "row";
     var temp = "http://media1.popsugar-assets.com/files/2014/02/18/159/n/28443503/5945b74bba9e1117_shutterstock_105361820.jpg.xxxlarge/i/Calories-Sushi.jpg";
-    cell1.innerHTML = "<div class='box'><div class='innerbox'><div class='col'><div class='roll'><a href='http://en.wikipedia.org/wiki/" + show_list[cell] + "'>" + show_list[cell] + "</a><br><img id = 'showid_" + cell + "' src ='" + temp + "' class='img-circle sushi'></img></div></div></div></div>";
-    cell2.innerHTML = "<div class='box'><div class='innerbox'><div class='col'><div class='roll'><a href='http://en.wikipedia.org/wiki/" + show_list[cell + 1] + "'>" + show_list[cell + 1] + "</a><br><img id = 'showid_" + cell + "' src ='" + temp + "' class='img-circle sushi'></img></div></div></div></div>";
+    cell1.innerHTML = "<div class='box'><div class='innerbox'><div class='colRoll'><div class='roll'><a href='http://en.wikipedia.org/wiki/" + show_list[cell] + "'>" + show_list[cell] + "</a><br><img id = 'showid_" + cell + "' src ='" + temp + "' class='img-circle sushi'></img></div></div></div></div>";
+    cell2.innerHTML = "<div class='box'><div class='innerbox'><div class='colRoll'><div class='roll'><a href='http://en.wikipedia.org/wiki/" + show_list[cell + 1] + "'>" + show_list[cell + 1] + "</a><br><img id = 'showid_" + cell + "' src ='" + temp + "' class='img-circle sushi'></img></div></div></div></div>";
   }
 }
 function getAllAnimeYears(){
+  reloadTwitterButton("Hamtaro");
+
   for(var i = 2014; i <= 2015; i++){
     loadWikiData(i);
   }
@@ -91,14 +96,32 @@ function loadWikiData(year)
     xmlhttp.open("GET","http://en.wikipedia.org/wiki/Category:" + year +"_anime_television_series",true);
     xmlhttp.send();
 }
+function reloadTwitterButton(show){
 
+  document.getElementById("twitterContainer").innerHTML = "";
+
+  var link = document.createElement('a');
+  link.setAttribute('href', 'https://twitter.com/int?screen_name=wondachue');
+  link.setAttribute('class', 'twitter-mention-button');
+  link.setAttribute("data-text" , "Hey there tomodachi, " + show + " is airing on: " );
+  link.setAttribute("data-size" ,"large");
+  //link.setAttribute("data-via" ,"tomodachibox") ;
+  link.setAttribute("data-url" ,"http://en.wikipedia.org/wiki/" + show);
+  document.getElementById("twitterContainer").appendChild(link) ;
+  $.getScript('https://platform.twitter.com/widgets.js', function(){
+    twttr.widgets.load();
+  });
+}
 //EventListener that listens once the extension loads
 document.addEventListener('DOMContentLoaded', function() {
     var addToBox = document.getElementById('addToBox');
     
     addToBox.addEventListener('click', function() {
         var show = document.getElementById('shows').value;
-        console.log("The user input " + show + " into the show search bar.");
+
+        //reload twitter button with new show
+        reloadTwitterButton(show);
+
 
         //This is where the new page will be loaded from!
         document.getElementById('shows').value = "";

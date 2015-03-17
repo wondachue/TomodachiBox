@@ -4,12 +4,21 @@
   "name": "TomodachiBox",
   "description": "Anime friend connector",
   "version": "1.0",
+  "content_security_policy": "script-src 'self' https://platform.twitter.com https://cdn.api.twitter.com https://syndication.twimg.com https://apis.google.com https://connect.facebook.net; object-src 'self'",
+
 
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
   },
-
+  "content_scripts": [
+  {
+    "matches": ["http://localhost/Users/wondachue/Documents/school/human_comp_inter/TomodachiRoll/"],
+    "js": ["fb.js", "popup.js"],
+    "run_at": "document_start",
+    "all_frames" : false
+  }
+  ],
   "permissions": [
     "activeTab",
     "storage",
@@ -17,6 +26,13 @@
     "http://en.wikipedia.org/wiki/Category:2015_anime_television_series",
     "http://www.wikipedia.org/",
     "http://www.wikimedia.org/",
-    "http://bits.wikimedia.org/"
+    "http://bits.wikimedia.org/",
+    "http://*.twitter.com/*",
+    "http://*.twing.com/*",
+    "tabs",
+    "https://apis.google.com/*",
+    "https://developers.facebook.com/docs/plugins/",
+    "https://www.facebook.com/",
+    "https://connect.facebook.net/en_US/all.js"
   ]
 }

@@ -31,7 +31,7 @@
           .container {
             margin: 3px;
           }
-          .col{
+          .colRoll{
             margin-left: 25px;
             padding: 15px;
             width: 150px;
@@ -78,7 +78,7 @@
         <script src="popup.js"></script>
       <title>Tomodachi Box</title>
   </head>
-  <body id="body">
+  <body>
 
       <div class = "container">
         <div id="title">
@@ -94,9 +94,16 @@
           <table id="show_grid">
           </table>
         </div>
-       <button class="btn btn-default" id="notifyFriends">
-           <span class="glyphicon glyphicon-envelope" style="vertical-align:middle"> Notify your friends!</span>
-        </button>
+        <div class="buttonRow row">
+          <div class="col-xs-4">
+            <button class="btn btn-default" id="notifyFriends">
+              <span class="glyphicon glyphicon-envelope" style="vertical-align:middle"> </span>
+                Messages
+            </button>
+          </div>
+          <div class="col-xs-4" id="twitterContainer">
+          </div>
+        </div>
       </div> 
 
   </body>
