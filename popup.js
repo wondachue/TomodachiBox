@@ -11,15 +11,47 @@ var usershows = {};
 
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
 
+/*getFB = function(){ // this could be done faster with the livequery() plugin for jquery
+
+    /*elt = document.createElement('iframe');
+    elt.id = 'facebook_load_frame';
+    elt.src = 'https://cise.ufl.edu/~mdwyer/index.html';
+    document.getElementById('facebook_handler').appendChild(elt);
+    };*/
+    // Message passing API from David Walsh at http://davidwalsh.name/window-iframe
+    // Create IE + others compatible event handler
+    //var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    //var eventer = window[eventMethod];
+    //var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+    // Listen to message from child window
+    //eventer(messageEvent,function(e) {
+      //console.log('called');
+     //console.log("Connection status: "+e.data.connectStatus+"; UserID: "+e.data.userID+"; AccessToken: "+e.data.accessToken);
+     //This is the data from the Facebook SDK
+
+//},false);*/
+
 
 $(function() {
     $( "#shows" ).autocomplete({
       source: show_list
     });
   });
-$(document).ready(function() { 
-  console.log("ready!");
 
+$(document).ready(function() { 
+  $('<iframe />', {
+       src: 'https://cise.ufl.edu/~mdwyer/index.html',
+       id:  'facebook_load_frame',
+       load:function(){
+          var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+          var eventer = window[eventMethod];
+          var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+          eventer(messageEvent,function(e) {
+            console.log("Connection status: "+e.data.connectStatus+"; UserID: "+e.data.userID+"; AccessToken: "+e.data.accessToken);
+          });
+       }
+  }).appendTo('#facebook_handler');
+  
   getAllAnimeYears();
 
   $('button.titleBtn').click(function(){
@@ -30,9 +62,7 @@ $(document).ready(function() {
 function createTable(page){
   var table = document.getElementById("show_grid");
 
-  if(page == "home"){
-    console.log("Request to view home page, beginning creation...");
-    
+  if(page == "home"){    
     table.innerHTML = "";
     
     storage.get(theshow,function(result){ 
@@ -42,11 +72,8 @@ function createTable(page){
       }
 
       var size = result.shows.length;
-      console.log("Cleared the page of existing to load home view with user show list of size: " + size);
-
 
       for(var cell = 0; cell < size; cell +=2){
-        console.log("creating cell " + cell);
         var row = table.insertRow(0);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
@@ -71,6 +98,7 @@ function createTable(page){
                 $("<div>").addClass("roll").text(""))))).html(); 
         }
         else{
+
           cell2.innerHTML = ($("<div>").addClass("box").append(
             $("<div>").addClass("innerbox").append(
               $("<div>").addClass("colRoll").append(
@@ -79,8 +107,6 @@ function createTable(page){
 
       }
         addLinkOnClick(result.shows); 
-        console.log("Done with creation of home page....");
-
     });
   }
   else if(page == "list"){
@@ -89,7 +115,6 @@ function createTable(page){
     
     storage.get(theshow,function(result){ 
       var size = result.shows.length;
-      console.log("Cleared the page of existing to load user show list of size: " + size);
       for(var cell = 0; cell < size; cell +=1){
         var row = table.insertRow(0);
         var cell1 = row.insertCell(0);
@@ -111,8 +136,6 @@ function createTable(page){
               "Something dependent upon " + result.shows[cell] + " goes here..."))))).html();
 
         }
-        console.log("List page should be filled");
-
     });
 
 
@@ -145,7 +168,6 @@ function getAllAnimeYears(){
   for(var i = 2015; i <= 2015; i++){
     loadWikiData(i);
   }
-  console.log("Done loading wiki shows.");
 }
 
 function loadShowData(this_num)
@@ -159,16 +181,19 @@ function loadShowData(this_num)
     {
       if (xmlhttp.readyState==4 && xmlhttp.status==200)
       {
+
             var wiki_page = xmlhttp.responseText;
             var wiki_infobox = $(".infobox", wiki_page);
             images[this_num] = "http:" + $("img", wiki_infobox).attr('src');
+            
             var wiki_descrip = $("#mw-content-text", wiki_page);
             descrips[this_num] = $("p", wiki_descrip).first();
-            //console.log("trying: http://en.wikipedia.org/wiki/" + show_list[this_num]);
-            //console.log("showid_" + this_num);
-            //console.log("stored src: " + $("img", wiki_infobox).attr('src'));
-            document.getElementById("showid_" + this_num).src = images[this_num];
-            //console.log("new src: " + document.getElementById("showid_" + this_num).src);
+            try{
+              document.getElementById("showid_" + this_num).src = images[this_num];
+            }
+            catch(err){
+              //TypeError: Cannot set property 'src' of null
+            }
       }
       
     }
@@ -196,7 +221,6 @@ function loadWikiData(year)
               }
             });
             createTable("home");
-                
       }
       
     }
@@ -222,10 +246,7 @@ function reloadTwitterButton(show){
 }
 
 function makeShowPage(showname){
-   var table = document.getElementById("show_grid");
-
-   console.log("Request to view " + showname + " page, beginning creation...");
-    
+   var table = document.getElementById("show_grid");    
    table.innerHTML = "Request to view " + showname + " page, beginning creation...";
 
 }
@@ -265,11 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
               usershows["shows"] = [show];
             }
             chrome.storage.sync.set(usershows);
-                    
-
-         
-            console.log("The user's current " + theshow + " list : ", usershows);
-            
+                                
             var list = '';
             for (var title in usershows) {
               list += title + ': ' + usershows[title]+'; ';
