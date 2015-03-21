@@ -8,29 +8,10 @@ var descrips = [];
 var storage = chrome.storage.sync;
 var theshow = 'shows';
 var usershows = {};
-
+var fb_connectStatus = "nope";
+var fb_accessToken = "nope";
+var fb_userID = "nope";
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
-
-/*getFB = function(){ // this could be done faster with the livequery() plugin for jquery
-
-    /*elt = document.createElement('iframe');
-    elt.id = 'facebook_load_frame';
-    elt.src = 'https://cise.ufl.edu/~mdwyer/index.html';
-    document.getElementById('facebook_handler').appendChild(elt);
-    };*/
-    // Message passing API from David Walsh at http://davidwalsh.name/window-iframe
-    // Create IE + others compatible event handler
-    //var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-    //var eventer = window[eventMethod];
-    //var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-    // Listen to message from child window
-    //eventer(messageEvent,function(e) {
-      //console.log('called');
-     //console.log("Connection status: "+e.data.connectStatus+"; UserID: "+e.data.userID+"; AccessToken: "+e.data.accessToken);
-     //This is the data from the Facebook SDK
-
-//},false);*/
-
 
 $(function() {
     $( "#shows" ).autocomplete({
@@ -58,6 +39,18 @@ $(document).ready(function() {
     makeShowPage("a click happened");
   });
 });
+function listener(event){
+  fb_connectStatus = event.data.connectStatus;
+  fb_accessToken = event.data.accessToken;
+  fb_userID = event.data.userID;
+  console.log("connect: " + event.connectStatus + " accessToken:" + event.accessToken + " userID: " + event.userID);
+}
+if (window.addEventListener){
+  addEventListener("message", listener, false);
+} else {
+  attachEvent("onmessage", listener);
+}
+
 
 function createTable(page){
   var table = document.getElementById("show_grid");
