@@ -3,6 +3,8 @@ var numAnime = 0;
 var show_list = [];
 var images = [];
 var descrips = [];
+var fb_shows_user = [];
+var fb_shows_friends = [];
 
 //For storage and user show list
 var storage = chrome.storage.sync;
@@ -11,6 +13,7 @@ var usershows = {};
 var fb_connectStatus = "nope";
 var fb_accessToken = "nope";
 var fb_userID = "nope";
+
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
 
 $(function() {
@@ -35,11 +38,44 @@ $(document).ready(function() {
   
   getAllAnimeYears();
 });
+function getFBInfo(){
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        xmlhttp=new XMLHttpRequest();
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+            var fbjson = xmlhttp.responseText;
+            var data_fb = JSON.parse( fbjson );
+            console.log(fbjson);
+            for(dat in data_fb.friends.data){
+              for(show in data_fb.friends.data[dat].television.data){
+                fb_shows_friends.push(data_fb.friends.data[dat].television.data[show].name);
+              } 
+            }
+            for(elem in data_fb.television.data){
+                fb_shows_user.push(data_fb.television.data[elem].name);
+            }
+      }
+      
+    }
+    xmlhttp.open("GET","https://graph.facebook.com/v2.2/me?access_token=" + fb_accessToken +"&fields=id,name,friends{television},television",true);
+    xmlhttp.send();
+}
 function listener(event){
   fb_connectStatus = event.data.connectStatus;
   fb_accessToken = event.data.accessToken;
   fb_userID = event.data.userID;
-  console.log("connect: " + event.connectStatus + " accessToken:" + event.accessToken + " userID: " + event.userID);
+  console.log("connect: " + event.data.connectStatus + " accessToken:" + event.data.accessToken + " userID: " + event.data.userID);
+  if(event.data.connectStatus == "connected"){
+    getFBInfo();
+  }
+  //for(ev in event){  
+  //  console.log(ev + ": " + event.data[ev]);
+  //}
 }
 if (window.addEventListener){
   addEventListener("message", listener, false);
@@ -134,7 +170,7 @@ function makeShowPage(showname){
 function getAllAnimeYears(){
   reloadTwitterButton("Hamtaro");
 
-  for(var i = 1961; i <= 2015; i++){
+  for(var i = 2015; i <= 2015; i++){
     loadWikiData(i);
   }
 }
@@ -186,7 +222,12 @@ function loadShowData(this_num)
             //console.log("trying: http://en.wikipedia.org/wiki/" + show_list[this_num]);
             //console.log("showid_" + this_num);
             //console.log("stored src: " + $("img", wiki_infobox).attr('src'));
-            document.getElementById("showid_" + this_num).src = images[this_num];
+            try{
+              document.getElementById("showid_" + this_num).src = images[this_num];
+            }
+            catch(err){
+              //TypeError: Cannot set property 'src' of null
+            }
             //console.log("new src: " + document.getElementById("showid_" + this_num).src);
       }
       
@@ -264,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
     });
-
+    var upcoming = document.getElementById("upcoming");
     upcoming.addEventListener('click', function() {
           console.log("The user wants to view upcoming page...");
 
