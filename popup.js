@@ -1,23 +1,39 @@
 var numAnime = 0;
 
+//Handling of the show list
 var show_list = [];
 var images = [];
 var descrips = [];
 
 //For storage and user show list
-var storage = chrome.storage.sync;
-var theshow = 'shows';
+var storage = chrome.storage.local;
+
 var usershows = {};
+
+var dateToStore = -1;
+var showsToStore = {};
+
+
+//Hanlding of the Social Media
 var fb_connectStatus = "nope";
 var fb_accessToken = "nope";
 var fb_userID = "nope";
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
 
 $(function() {
-    $( "#shows" ).autocomplete({
-      source: show_list
-    });
+  storage.get(function(result){
+    if(show_list == 0){
+      $( "#shows" ).autocomplete({
+        source: result.showList
+      });
+    }
+    else{
+      $( "#shows" ).autocomplete({
+        source: show_list
+      });  
+    }
   });
+});
 
 $(document).ready(function() { 
   $('<iframe />', {
@@ -35,6 +51,7 @@ $(document).ready(function() {
   
   getAllAnimeYears();
 });
+
 function listener(event){
   fb_connectStatus = event.data.connectStatus;
   fb_accessToken = event.data.accessToken;
@@ -54,10 +71,10 @@ function createTable(page){
   if(page == "home"){    
     table.innerHTML = "";
     
-    storage.get(theshow,function(result){ 
+    storage.get('shows',function(result){ 
       
       if(result.shows == null){
-        table.innerHTML = "Add shows to your list with the search bar above!";
+        table.innerHTML = "Add shows to your list with the search bar above!<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :(";
       }
 
       var size = result.shows.length;
@@ -96,8 +113,11 @@ function createTable(page){
 
       }
         addLinkOnClick(result.shows); 
+        console.log("Attempting to store list for the first time...");
+        storeListPlease();
 
         console.log("Done with creation of home page....");
+
     });
   }
   else{
@@ -108,15 +128,16 @@ function createTable(page){
 
 function addLinkOnClick(showArray){
   var links = $('.titlelink');
-  //console.log(links);
   for(var i = 0; i < links.length; i++){
-    //console.log("the link: " + links[i]);
     var link = links[i];
     link.onclick = function(){
        console.log("The id of the clicked link should be: " + this.id);
        makeShowPage(this.id);
     }
   }
+
+  //Just making sure the show list is stored as soon as possible
+  storeListPlease();
 }
 
 function makeShowPage(showname){
@@ -125,18 +146,78 @@ function makeShowPage(showname){
    console.log("Request to view " + showname + " page, beginning creation...");
     
    table.innerHTML = "Requestiong the " + showname + " page...coming soon folks";
+}
 
-
-
+function storeListPlease(){
+  console.log("Checks if show list needs to be stored...");
+  //should only store if there is stuff in the list?
+          if(show_list != undefined && show_list.length != 0){
+            console.log("Storing the show list....");
+            storage.set({"showList" : show_list}, function(listcheck){console.log("show list should have been pushed? " + listcheck.showList)});
+          }
 }
 
 
 function getAllAnimeYears(){
   reloadTwitterButton("Hamtaro");
+  createTable("home"); 
 
-  for(var i = 1961; i <= 2015; i++){
-    loadWikiData(i);
-  }
+  storage.get(function(result){
+
+    //accounting for potential first load
+    if(result.showListDate == undefined){
+      dateToStore = 0;
+    }
+    else{
+      dateToStore = result.showListDate;
+    }
+
+    if(result.showList == undefined){
+      console.log("Undefined show list was caught...");
+      
+      var lastPulled = Date.now() - dateToStore;
+      var updateWhen = 31556952000; //num milliseconds in a year
+     
+      if(lastPulled > updateWhen){
+        console.log("Need to update the show list in storage...");
+        
+        for(var i = 1961; i <= 2015; i++){
+          loadWikiData(i);
+        }
+        
+        var today = Date.now();
+        storage.set({"showListDate" : today}, function(datecheck){
+          console.log("stored date is: " + datecheck.showListDate)
+          storage.set({"showList" : showsToStore}, function(check){
+            console.log("show list created to empty. show list : " + check.showList);
+          });
+
+        });
+        
+
+        
+      }
+      else{
+        console.log("It's not time to update show list...");
+
+      }
+      
+      storage.get(function(results){
+        console.log("After updating the show list if needed, there are " + results.showList.length + " items in the stored show list.");
+      });
+
+
+     }
+    else{
+      console.log("Show list was not undefined, will handle this later?...");
+      storage.get(function(result){console.log("There should be data in the stored list. Exactly " + result.showList.length + " items are stored there.")});
+      
+    }
+
+    
+
+  });
+    
 }
 
 function loadWikiData(year)
@@ -159,7 +240,7 @@ function loadWikiData(year)
                 numAnime++;
               }
             });
-            createTable("home");
+            
       }
       
     }
@@ -215,7 +296,9 @@ function reloadTwitterButton(show){
 //EventListener that listens once the extension loads
 document.addEventListener('DOMContentLoaded', function() {
     var addToBox = document.getElementById('addToBox');
-
+    var upcoming = document.getElementById('upcoming');
+    
+    
     addToBox.addEventListener('click', function() {
         var show = document.getElementById('shows').value;
 
@@ -225,32 +308,43 @@ document.addEventListener('DOMContentLoaded', function() {
         //This is where the new page will be loaded from!----------------------
         document.getElementById('shows').value = "";
 
+        //Handles adding the show to the user's list
+        storage.get(function(result){
+
         //makes sure it is actually a show and then adds it to the user's list
         var isShow = false;
-        for(var i = 0; i < show_list.length; i++){
-          if(show == show_list[i]){
-            isShow = true;
-            break;
+        if(show_list == 0){
+          for(var i = 0; i < result.showList.length; i++){
+            if(show == result.showList[i]){
+              isShow = true;
+              break;
+            }
           }
         }
-        
-        //last check should make it unique?
-        storage.get(function(usershows){
+        else{
+          for(var i = 0; i < show_list.length; i++){
+            if(show == show_list[i]){
+              isShow = true;
+              break;
+            }
+          }
+        }
 
-        if(isShow && $.inArray(show,usershows["shows"]) == -1){     
+        //last check should make it unique?       
+        if(isShow && $.inArray(show,result["shows"]) == -1){     
           
                     
-            if(typeof(usershows["shows"]) !== 'undefined' && usershows["shows"] instanceof Array) {
-              usershows["shows"].push(show);
+            if(typeof(result["shows"]) !== 'undefined' && result["shows"] instanceof Array) {
+              result["shows"].push(show);
             }
             else{
-              usershows["shows"] = [show];
+              result["shows"] = [show];
             }
-            chrome.storage.sync.set(usershows);
+            storage.set(result);
                                 
             var list = '';
-            for (var title in usershows) {
-              list += title + ': ' + usershows[title]+'; ';
+            for (var title in result) {
+              list += title + ': ' + result[title]+'; ';
             }
             console.log("The current user " + list);
             
@@ -262,6 +356,9 @@ document.addEventListener('DOMContentLoaded', function() {
           console.log("Get here by putting in a show already on your list or something that isn't a show! We need to notify the user somehow.");
         }
         });
+
+        //Just making sure the show list is stored as soon as possible
+        storeListPlease();
         
     });
 
@@ -269,6 +366,9 @@ document.addEventListener('DOMContentLoaded', function() {
           console.log("The user wants to view upcoming page...");
 
           document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
+
+          //Just making sure the show list is stored as soon as possible
+          storeListPlease();
                   
     });
 
