@@ -8,27 +8,50 @@ var descrips = [];
 var storage = chrome.storage.sync;
 var theshow = 'shows';
 var usershows = {};
-
+var fb_connectStatus = "nope";
+var fb_accessToken = "nope";
+var fb_userID = "nope";
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
-
 
 $(function() {
     $( "#shows" ).autocomplete({
       source: show_list
     });
   });
-$(document).ready(function() { 
-  console.log("ready!");
 
+$(document).ready(function() { 
+  $('<iframe />', {
+       src: 'https://cise.ufl.edu/~mdwyer/index.html',
+       id:  'facebook_load_frame',
+       load:function(){
+          var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+          var eventer = window[eventMethod];
+          var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+          eventer(messageEvent,function(e) {
+            console.log("Connection status: "+e.data.connectStatus+"; UserID: "+e.data.userID+"; AccessToken: "+e.data.accessToken);
+          });
+       }
+  }).appendTo('#facebook_handler');
+  
   getAllAnimeYears();
 });
+function listener(event){
+  fb_connectStatus = event.data.connectStatus;
+  fb_accessToken = event.data.accessToken;
+  fb_userID = event.data.userID;
+  console.log("connect: " + event.connectStatus + " accessToken:" + event.accessToken + " userID: " + event.userID);
+}
+if (window.addEventListener){
+  addEventListener("message", listener, false);
+} else {
+  attachEvent("onmessage", listener);
+}
+
 
 function createTable(page){
   var table = document.getElementById("show_grid");
 
-  if(page == "home"){
-    console.log("Request to view home page, beginning creation...");
-    
+  if(page == "home"){    
     table.innerHTML = "";
     
     storage.get(theshow,function(result){ 
@@ -38,11 +61,8 @@ function createTable(page){
       }
 
       var size = result.shows.length;
-      console.log("Cleared the page of existing to load home view with user show list of size: " + size);
-
 
       for(var cell = 0; cell < size; cell +=2){
-        console.log("creating cell " + cell);
         var row = table.insertRow(0);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
@@ -67,6 +87,7 @@ function createTable(page){
                 $("<div>").addClass("roll").text(""))))).html(); 
         }
         else{
+
           cell2.innerHTML = ($("<div>").addClass("box").append(
             $("<div>").addClass("innerbox").append(
               $("<div>").addClass("colRoll").append(
@@ -75,6 +96,7 @@ function createTable(page){
 
       }
         addLinkOnClick(result.shows); 
+
         console.log("Done with creation of home page....");
     });
   }
@@ -86,9 +108,9 @@ function createTable(page){
 
 function addLinkOnClick(showArray){
   var links = $('.titlelink');
-  console.log(links);
+  //console.log(links);
   for(var i = 0; i < links.length; i++){
-    console.log("the link: " + links[i]);
+    //console.log("the link: " + links[i]);
     var link = links[i];
     link.onclick = function(){
        console.log("The id of the clicked link should be: " + this.id);
@@ -102,7 +124,7 @@ function makeShowPage(showname){
 
    console.log("Request to view " + showname + " page, beginning creation...");
     
-   table.innerHTML = "";
+   table.innerHTML = "Requestiong the " + showname + " page...coming soon folks";
 
 
 
@@ -115,7 +137,6 @@ function getAllAnimeYears(){
   for(var i = 1961; i <= 2015; i++){
     loadWikiData(i);
   }
-  console.log("Done loading wiki shows.");
 }
 
 function loadWikiData(year)
@@ -139,7 +160,6 @@ function loadWikiData(year)
               }
             });
             createTable("home");
-                
       }
       
     }
@@ -227,11 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
               usershows["shows"] = [show];
             }
             chrome.storage.sync.set(usershows);
-                    
-
-         
-            console.log("The user's current " + theshow + " list : ", usershows);
-            
+                                
             var list = '';
             for (var title in usershows) {
               list += title + ': ' + usershows[title]+'; ';
