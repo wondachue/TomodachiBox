@@ -21,10 +21,6 @@ $(document).ready(function() {
   console.log("ready!");
 
   getAllAnimeYears();
-
-  $('button.titleBtn').click(function(){
-    makeShowPage("a click happened");
-  });
 });
 
 function createTable(page){
@@ -80,45 +76,7 @@ function createTable(page){
       }
         addLinkOnClick(result.shows); 
         console.log("Done with creation of home page....");
-
     });
-  }
-  else if(page == "list"){
-
-    table.innerHTML = "";
-    
-    storage.get(theshow,function(result){ 
-      var size = result.shows.length;
-      console.log("Cleared the page of existing to load user show list of size: " + size);
-      for(var cell = 0; cell < size; cell +=1){
-        var row = table.insertRow(0);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        row.className = "row";
-
-        cell1.innerHTML = ($("<div>").addClass("box").append(
-        $("<div>").addClass("innerbox").append(
-          $("<div>").addClass("colRoll").append(
-            $("<div>").addClass("roll").append(
-              $("<a>").attr("href","http://en.wikipedia.org/wiki/" + result.shows[cell]).text(result.shows[cell])))))).html();
-
-        
-
-        cell2.innerHTML = ($("<div>").addClass("box").append(
-        $("<div>").addClass("innerbox").append(
-          $("<div>").addClass("colRoll").append(
-            $("<div>").addClass("roll").text(
-              "Something dependent upon " + result.shows[cell] + " goes here..."))))).html();
-
-        }
-        console.log("List page should be filled");
-
-    });
-
-
-  }
-  else if($page == "notify"){
-
   }
   else{
     console.log("something horrible happened to get here @_@");
@@ -126,55 +84,40 @@ function createTable(page){
 
 }
 
-
 function addLinkOnClick(showArray){
   var links = $('.titlelink');
   console.log(links);
   for(var i = 0; i < links.length; i++){
+    console.log("the link: " + links[i]);
     var link = links[i];
     link.onclick = function(){
-       console.log("the id should be " + link.id);
+       console.log("The id of the clicked link should be: " + this.id);
+       makeShowPage(this.id);
     }
   }
+}
+
+function makeShowPage(showname){
+   var table = document.getElementById("show_grid");
+
+   console.log("Request to view " + showname + " page, beginning creation...");
+    
+   table.innerHTML = "";
+
+
+
 }
 
 
 function getAllAnimeYears(){
   reloadTwitterButton("Hamtaro");
 
-  for(var i = 2015; i <= 2015; i++){
+  for(var i = 1961; i <= 2015; i++){
     loadWikiData(i);
   }
   console.log("Done loading wiki shows.");
 }
 
-function loadShowData(this_num)
-{
-    var xmlhttp;
-    if (window.XMLHttpRequest)
-    {
-        xmlhttp=new XMLHttpRequest();
-    }
-    xmlhttp.onreadystatechange=function()
-    {
-      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-      {
-            var wiki_page = xmlhttp.responseText;
-            var wiki_infobox = $(".infobox", wiki_page);
-            images[this_num] = "http:" + $("img", wiki_infobox).attr('src');
-            var wiki_descrip = $("#mw-content-text", wiki_page);
-            descrips[this_num] = $("p", wiki_descrip).first();
-            //console.log("trying: http://en.wikipedia.org/wiki/" + show_list[this_num]);
-            //console.log("showid_" + this_num);
-            //console.log("stored src: " + $("img", wiki_infobox).attr('src'));
-            document.getElementById("showid_" + this_num).src = images[this_num];
-            //console.log("new src: " + document.getElementById("showid_" + this_num).src);
-      }
-      
-    }
-    xmlhttp.open("GET","http://en.wikipedia.org/wiki/" + show_list[this_num],true);
-    xmlhttp.send();
-}
 function loadWikiData(year)
 {
     var xmlhttp;
@@ -204,6 +147,34 @@ function loadWikiData(year)
     xmlhttp.send();
 }
 
+function loadShowData(this_num)
+{
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        xmlhttp=new XMLHttpRequest();
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+            var wiki_page = xmlhttp.responseText;
+            var wiki_infobox = $(".infobox", wiki_page);
+            images[this_num] = "http:" + $("img", wiki_infobox).attr('src');
+            var wiki_descrip = $("#mw-content-text", wiki_page);
+            descrips[this_num] = $("p", wiki_descrip).first();
+            //console.log("trying: http://en.wikipedia.org/wiki/" + show_list[this_num]);
+            //console.log("showid_" + this_num);
+            //console.log("stored src: " + $("img", wiki_infobox).attr('src'));
+            document.getElementById("showid_" + this_num).src = images[this_num];
+            //console.log("new src: " + document.getElementById("showid_" + this_num).src);
+      }
+      
+    }
+    xmlhttp.open("GET","http://en.wikipedia.org/wiki/" + show_list[this_num],true);
+    xmlhttp.send();
+}
+
 function reloadTwitterButton(show){
 
   document.getElementById("twitterContainer").innerHTML = "";
@@ -219,15 +190,6 @@ function reloadTwitterButton(show){
   $.getScript('https://platform.twitter.com/widgets.js', function(){
     twttr.widgets.load();
   });
-}
-
-function makeShowPage(showname){
-   var table = document.getElementById("show_grid");
-
-   console.log("Request to view " + showname + " page, beginning creation...");
-    
-   table.innerHTML = "Request to view " + showname + " page, beginning creation...";
-
 }
 
 //EventListener that listens once the extension loads
@@ -282,16 +244,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         else{
           console.log("Get here by putting in a show already on your list or something that isn't a show! We need to notify the user somehow.");
-          //document.getElementById('show_grid').innerHTML = "<b>The Personal List Page here?<br>Silly you! That wasn't a show >:T</b><br><br>The previous user inputed " + list + "</b>";
         }
         });
         
     });
 
-    notifyFriends.addEventListener('click', function() {
-          console.log("The user wants to notify friends of release dates");
+    upcoming.addEventListener('click', function() {
+          console.log("The user wants to view upcoming page...");
 
-          document.getElementById('bg').innerHTML = "<b>Notify Friends Page Here</b>";
+          document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
                   
     });
 
