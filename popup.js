@@ -51,10 +51,20 @@ function getFBInfo(){
             var fbjson = xmlhttp.responseText;
             var data_fb = JSON.parse( fbjson );
             console.log(fbjson);
-            for(dat in data_fb.friends.data){
-              for(show in data_fb.friends.data[dat].television.data){
-                fb_shows_friends.push(data_fb.friends.data[dat].television.data[show].name);
-              } 
+            for(thing in data_fb.friends){
+              console.log(thing);
+              if(thing === "data"){
+                for(num in data_fb.friends.data){
+                  for(thing2 in data_fb.friends.data[num].television){
+                    console.log(thing2);
+                    if(thing2 === "data"){
+                      for(show in data_fb.friends.data[num].television.data){
+                          fb_shows_friends.push(data_fb.friends.data[num].television.data[show].name); 
+                      }
+                    }
+                  }
+                }
+              }
             }
             for(elem in data_fb.television.data){
                 fb_shows_user.push(data_fb.television.data[elem].name);
@@ -73,9 +83,6 @@ function listener(event){
   if(event.data.connectStatus == "connected"){
     getFBInfo();
   }
-  //for(ev in event){  
-  //  console.log(ev + ": " + event.data[ev]);
-  //}
 }
 if (window.addEventListener){
   addEventListener("message", listener, false);
