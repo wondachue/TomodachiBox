@@ -67,7 +67,7 @@ function getFBInfo(){
       {
             var fbjson = xmlhttp.responseText;
             var data_fb = JSON.parse( fbjson );
-            console.log(fbjson);
+            //console.log(fbjson);
             for(thing in data_fb.friends){
               console.log(thing);
               if(thing === "data"){
@@ -110,6 +110,11 @@ if (window.addEventListener){
 
 
 function createTable(page){
+  var bg = document.getElementById('bg');
+  bg.innerHTML = "";  
+
+  $('<table id="show_grid">').appendTo('#bg');
+
   var table = document.getElementById("show_grid");
 
   if(page == "home"){    
@@ -117,44 +122,50 @@ function createTable(page){
     
     storage.get('shows',function(result){ 
       
-      if(result.shows == null){
+      if(result.shows == null || result.shows == undefined){
         table.innerHTML = "Add shows to your list with the search bar above!<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :(";
       }
+      else{
+        var size = result.shows.length;
 
-      var size = result.shows.length;
+        for(var cell = 0; cell < size; cell +=2){
+          var row = table.insertRow(0);
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          row.className = "row";
+      
+          var temp = "http://media1.popsugar-assets.com/files/2014/02/18/159/n/28443503/5945b74bba9e1117_shutterstock_105361820.jpg.xxxlarge/i/Calories-Sushi.jpg";
+          
 
-      for(var cell = 0; cell < size; cell +=2){
-        var row = table.insertRow(0);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        row.className = "row";
-    
-        var temp = "http://media1.popsugar-assets.com/files/2014/02/18/159/n/28443503/5945b74bba9e1117_shutterstock_105361820.jpg.xxxlarge/i/Calories-Sushi.jpg";
-        
-        cell1.innerHTML = ($("<div>").addClass("box").append(
-          $("<div>").addClass("innerbox").append(
-            $("<div>").addClass("colRoll").append(
-              $("<div>").addClass("roll").html(
-                  "<a class='titlelink' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + 
-                  result.shows[cell] + "</a><br><img id = 'showid_" + (cell) + "' src ='" + 
-                  temp + "' class='img-circle sushi'></img>"))))).html();
-        
-        //leaving a trailing empty box if the num of user shows is odd, or filling it as needed~
-        //--LEFT UNDONE-- putting the trailing box at the bottom?
-        if(size % 2 != 0 && cell == size-1){
-          cell2.innerHTML = ($("<div>").addClass("box").append(
+          var showID = $.inArray(result.shows[cell],result.showList);
+
+          console.log("A found show id was " + showID);
+          cell1.innerHTML = ($("<div>").addClass("box").append(
             $("<div>").addClass("innerbox").append(
               $("<div>").addClass("colRoll").append(
-                $("<div>").addClass("roll").text(""))))).html(); 
-        }
-        else{
+                $("<div>").addClass("roll").html(
+                    "<a class='titlelink' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + 
+                    result.shows[cell] + "</a><br><img id = 'showid_" + showID + "' src ='" + 
+                    temp + "' class='img-circle sushi'></img>"))))).html();
+          
+          //leaving a trailing empty box if the num of user shows is odd, or filling it as needed~
+          //--LEFT UNDONE-- putting the trailing box at the bottom?
+          if(size % 2 != 0 && cell == size-1){
+            cell2.innerHTML = ($("<div>").addClass("box").append(
+              $("<div>").addClass("innerbox").append(
+                $("<div>").addClass("colRoll").append(
+                  $("<div>").addClass("roll").text(""))))).html(); 
+          }
+          else{
+            var showID = $.inArray(result.shows[cell+1],result.showList);
 
-          cell2.innerHTML = ($("<div>").addClass("box").append(
-            $("<div>").addClass("innerbox").append(
-              $("<div>").addClass("colRoll").append(
-                $("<div>").addClass("roll").html("<a href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a><br><img id = 'showid_" + (cell+1) + "' src ='" + temp + "' class='img-circle sushi'></img>"))))).html();
-        }
+            cell2.innerHTML = ($("<div>").addClass("box").append(
+              $("<div>").addClass("innerbox").append(
+                $("<div>").addClass("colRoll").append(
+                  $("<div>").addClass("roll").html("<a href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a><br><img id = 'showid_" + showID + "' src ='" + temp + "' class='img-circle sushi'></img>"))))).html();
+          }
 
+        }
       }
         addLinkOnClick(result.shows); 
         //console.log("Attempting to store list for the first time...");
@@ -185,20 +196,56 @@ function addLinkOnClick(showArray){
 }
 
 function makeShowPage(showname){
-   var table = document.getElementById("show_grid");
 
-   //console.log("Request to view " + showname + " page, beginning creation...");
-    
-   table.innerHTML = "Requestiong the " + showname + " page...coming soon folks";
+  storage.get( function(result){
+  var showID = $.inArray(showname,result.showList);
+  
+  var space = document.getElementById("bg");
+  space.innerHTML = "";
+
+  ($("<h3>").addClass("spTitle").text("Anime Title: " + showname)).appendTo('#bg');
+  
+  //Show page content
+
+  ($('<div>').addClass('spInfo')).appendTo('#bg');
+
+  ($('<div id="row1">').addClass('rowWrap')).appendTo('.spInfo');
+  ($('<div id="btn1">').addClass("spBtn").append(
+    $("<button id='spAdd'>").html('<span class="glyphicon glyphicon-plus" style="vertical-align:middle"> </span> to Box'))).appendTo('#row1');
+  ($('<div id="btn2">').addClass("spBtn").append(
+    $("<button id='spRemove'>").html('<span class="glyphicon glyphicon-minus" style="vertical-align:middle"> </span> from Box'))).appendTo('#row1');
+
+  ($('<div id="row2">').addClass('rowWrap')).appendTo('.spInfo');
+  ($("<div>").addClass("spImg").append(
+    $('<img>').addClass("spImgT").attr('src',result.imageList[showID]))).appendTo('#row2');
+  ($("<div>").addClass("spDesc").text("descripList should populate here")).appendTo('#row2');
+
+  ($('<div id="row3">').addClass('rowWrap')).appendTo('.spInfo');
+  ($("<div>").addClass("spRelInfo").text("Release date info here")).appendTo('#row3');
+  ($("<div>").addClass("spSocial").text("Social media connection aspects here?")).appendTo('#row3');
+
+  });
 }
 
 function storeListPlease(){
-  //console.log("Checks if show list needs to be stored...");
   //should only store if there is stuff in the list?
-          if(show_list != undefined && show_list.length != 0){
-            //console.log("Storing the show list....");
-            storage.set({"showList" : show_list}, function(listcheck){console.log("show list should have been pushed? It's size is: " + listcheck.showList.length)});
-          }
+    if(show_list != undefined && show_list.length != 0){
+      storage.set({"showList" : show_list}, function(listcheck){console.log("show list should have been pushed? It's size is: " + listcheck.showList.length)});
+    }
+
+    if(images != undefined && images.length != 0){
+      try{
+        storage.set({"imageList" : images}, function(result){
+          document.getElementById("showid_" + this_num).src = result.imageList[this_num]});
+      }
+      catch(err){
+        //TypeError: Cannot set property 'src' of null
+      }
+    }
+
+    if(descrips != undefined && descrips.length !=0){
+        storage.set({"descripList" : descrips});
+    }
 }
 
 
@@ -306,17 +353,7 @@ function loadShowData(this_num)
             var wiki_infobox = $(".infobox", wiki_page);
             images[this_num] = "http:" + $("img", wiki_infobox).attr('src');
             var wiki_descrip = $("#mw-content-text", wiki_page);
-            descrips[this_num] = $("p", wiki_descrip).first();
-            //console.log("trying: http://en.wikipedia.org/wiki/" + show_list[this_num]);
-            //console.log("showid_" + this_num);
-            //console.log("stored src: " + $("img", wiki_infobox).attr('src'));
-            try{
-              document.getElementById("showid_" + this_num).src = images[this_num];
-            }
-            catch(err){
-              //TypeError: Cannot set property 'src' of null
-            }
-            //console.log("new src: " + document.getElementById("showid_" + this_num).src);
+            descrips[this_num] = $("p", wiki_descrip).first();            
       }
       
     }
@@ -329,7 +366,7 @@ function reloadTwitterButton(show){
   document.getElementById("twitterContainer").innerHTML = "";
 
   var link = document.createElement('a');
-  link.setAttribute('href', 'https://twitter.com/int?screen_name=wondachue');
+  link.setAttribute('href', 'https://twitter.com/int?screen_name=');
   link.setAttribute('class', 'twitter-mention-button');
   link.setAttribute("data-text" , "Hey there tomodachi, " + show + " is airing on: " );
   link.setAttribute("data-size" ,"large");
@@ -345,7 +382,7 @@ function reloadTwitterButton(show){
 document.addEventListener('DOMContentLoaded', function() {
     var addToBox = document.getElementById('addToBox');
     var upcoming = document.getElementById('upcoming');
-    
+    var toHome = document.getElementById('toHome');
     
     addToBox.addEventListener('click', function() {
         var show = document.getElementById('shows').value;
@@ -370,6 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
         else{
+
           for(var i = 0; i < show_list.length; i++){
             if(show == show_list[i]){
               isShow = true;
@@ -380,7 +418,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         //last check should make it unique?       
         if(isShow && $.inArray(show,result["shows"]) == -1){     
-          
                     
             if(typeof(result["shows"]) !== 'undefined' && result["shows"] instanceof Array) {
               result["shows"].push(show);
@@ -389,27 +426,19 @@ document.addEventListener('DOMContentLoaded', function() {
               result["shows"] = [show];
             }
             storage.set(result);
-                                
-            var list = '';
-            for (var title in result) {
-              list += title + ': ' + result[title]+'; ';
-            }
-            console.log("The current user " + list);
-            
+         
             createTable("home");
-          
-          
         }
         else{
           console.log("Get here by putting in a show already on your list or something that isn't a show! We need to notify the user somehow.");
         }
         });
 
-        //Just making sure the show list is stored as soon as possible
+        //Just making sure the lists is stored as soon as possible
         storeListPlease();
         
     });
-    var upcoming = document.getElementById("upcoming");
+
     upcoming.addEventListener('click', function() {
           console.log("The user wants to view upcoming page...");
 
@@ -419,6 +448,16 @@ document.addEventListener('DOMContentLoaded', function() {
           storeListPlease();
                   
     });
+
+    toHome.addEventListener('click',function() {
+        console.log("The user wants to return to home page...");
+
+        createTable("home");
+
+        storeListPlease();
+    });
+
+    //spAdd.addEventListener('click',)
 
 });
 

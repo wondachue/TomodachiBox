@@ -1,0 +1,153 @@
+/*Basic Styling*/
+#bg{
+  background-color: white;
+  width: 430px;
+  height: 300px;
+  overflow-y: scroll;
+}
+.title{
+  font-weight: bold;
+}
+.rollIcon{
+  background-image: url("roll.gif");
+}
+.sushi{
+  width: 50px;
+  height: 50px;
+}
+.ui-autocomplete {
+  max-height: 100px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+* html .ui-autocomplete {
+  height: 100px;
+}
+
+/*Home View Sytling*/
+#show_grid{
+  width : 100%;
+}
+.container {
+  margin: 3px;
+}
+.colRoll{
+  margin-left: 25px;
+  padding: 15px;
+  width: 150px;
+  height: 150px;
+  background: -webkit-linear-gradient(70deg, black, #303030,  #141414);
+  border: 3px solid black;
+  border-radius: 70px;
+  box-shadow: inset 0px 0px 10px white;
+}
+.box{
+  background: -webkit-linear-gradient(70deg, black, red, #f2f0ee);
+  border: 3px solid black;
+  box-shadow: inset 0px 0px 12px red;        
+}
+.innerbox{
+  background: -webkit-linear-gradient(#990021, black);
+  border: 3px solid black;
+  margin: 7px;
+  padding: 2px;
+}
+.roll{
+  margin: 7px;
+  padding: 5px;
+  width: 85%;
+  height: 85%;
+  background: -webkit-linear-gradient(70deg, white, #f2f0ee,  white);
+  border: 3px solid white;
+  border-radius: 50px;
+  box-shadow: inset 0px 0px 10px white;
+  text-align: center;
+  color : red;
+
+}
+.row{
+  width: 100%;
+  margin: 10px;
+}
+
+/*Show Page Styling*/
+.spInfo{
+  width: 100%;
+}
+.rowWrap{
+  width: 90%;
+}
+.spTitle{
+  text-align: center;
+  color : black;  
+}
+.spBtn{
+  margin: 5px;
+  padding: 1px;
+  width: 33%;
+  height: 10%;
+}
+#btn1{
+  float: left;
+}
+#btn2{
+  float: right;
+}
+.spImg{
+  margin: 5px;
+  padding: 2px;
+  width: 40%;
+  float: left;
+}
+.spImgT{
+  width: 40%;
+}
+.spDesc{
+  margin: 5px;
+  padding: 2px;
+  width: 50%;
+  float: right;
+}
+.spRelInfo{
+  margin: 5px;
+  padding: 2px;
+  width: 40%;
+  float: left;
+}
+.spSocial{
+  margin: 5px;
+  padding: 2px;
+  width: 40%;
+  float: right;
+}
+
+/*Upcoming Page Styling*/
+
+
+/*Facebook Style tags*/
+#facebook_load_frame {
+ width:1px;
+ height:1px;
+ border:0;
+ position:absolute;
+ top:0;
+ left:0;
+ display:none;
+}
+#fb_login_button { 
+    width: 80px; 
+}
+#fb_login_button span, 
+#fb_login_button iframe {.
+    width: 80px !important;
+    height: 25px !important;
+}
+#facebook_handler{
+ width:1px;
+ height:1px;
+ border:0;
+ position:absolute;
+ top:0;
+ left:0;
+ display:none;
+}

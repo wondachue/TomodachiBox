@@ -15,6 +15,7 @@
   "content_scripts": [
   {
     "matches": ["http://cise.ufl.edu/~mdwyer/index.html"],
+    //"css": ["popup.css"],
     "js": ["fb.js", "popup.js"],
     "run_at": "document_start",
     "all_frames" : false
