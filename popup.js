@@ -25,7 +25,8 @@ window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.
 
 $(function() {
   storage.get(function(result){
-    if(show_list == 0){
+
+    if(result.showList != undefined){
       $( "#shows" ).autocomplete({
         source: result.showList
       });
@@ -136,8 +137,10 @@ function createTable(page){
       
           var temp = "http://media1.popsugar-assets.com/files/2014/02/18/159/n/28443503/5945b74bba9e1117_shutterstock_105361820.jpg.xxxlarge/i/Calories-Sushi.jpg";
           
-
-          var showID = $.inArray(result.shows[cell],result.showList);
+          var showID = -1;
+          if(result.showList != null || result.showList != undefined){
+            var showID = $.inArray(result.shows[cell],result.showList);
+          }
 
           console.log("A found show id was " + showID);
           cell1.innerHTML = ($("<div>").addClass("box").append(
@@ -157,7 +160,10 @@ function createTable(page){
                   $("<div>").addClass("roll").text(""))))).html(); 
           }
           else{
-            var showID = $.inArray(result.shows[cell+1],result.showList);
+            var showID = -1;
+            if(result.showList != null || result.showList !=undefined){
+              showID = $.inArray(result.shows[cell+1],result.showList);
+            }
 
             cell2.innerHTML = ($("<div>").addClass("box").append(
               $("<div>").addClass("innerbox").append(
@@ -198,31 +204,44 @@ function addLinkOnClick(showArray){
 function makeShowPage(showname){
 
   storage.get( function(result){
-  var showID = $.inArray(showname,result.showList);
-  
+  var showID = -1;
+  if(result.showList != null || result.showList != undefined){
+    showID = $.inArray(showname,result.showList);
+  }
+
   var space = document.getElementById("bg");
   space.innerHTML = "";
 
   ($("<h3>").addClass("spTitle").text("Anime Title: " + showname)).appendTo('#bg');
   
   //Show page content
+  ($('<table>').attr("id","spTble")).appendTo('#bg');
 
-  ($('<div>').addClass('spInfo')).appendTo('#bg');
+  var tbl = document.getElementById("spTble");
+  var row0 = tbl.insertRow(0);
+  var cell0a = row0.insertCell(0);
+  var cell0b = row0.insertCell(1);
 
-  ($('<div id="row1">').addClass('rowWrap')).appendTo('.spInfo');
-  ($('<div id="btn1">').addClass("spBtn").append(
-    $("<button id='spAdd'>").html('<span class="glyphicon glyphicon-plus" style="vertical-align:middle"> </span> to Box'))).appendTo('#row1');
-  ($('<div id="btn2">').addClass("spBtn").append(
-    $("<button id='spRemove'>").html('<span class="glyphicon glyphicon-minus" style="vertical-align:middle"> </span> from Box'))).appendTo('#row1');
+  cell0a.innerHTML = ($('<div id="btn1">').addClass("spBtn").append(
+    $("<button id='spAdd'>").html('<span class="glyphicon glyphicon-plus" style="vertical-align:middle"> </span> to Box'))).html();
+  cell0b.innerHTML = ($('<div id="btn2">').addClass("spBtn").append(
+    $("<button id='spRemove'>").html('<span class="glyphicon glyphicon-minus" style="vertical-align:middle"> </span> from Box'))).html();
+  
 
-  ($('<div id="row2">').addClass('rowWrap')).appendTo('.spInfo');
-  ($("<div>").addClass("spImg").append(
-    $('<img>').addClass("spImgT").attr('src',result.imageList[showID]))).appendTo('#row2');
-  ($("<div>").addClass("spDesc").text("descripList should populate here")).appendTo('#row2');
+  var row1 = tbl.insertRow(1);
+  var cell1a = row1.insertCell(0);
+  var cell1b = row1.insertCell(1);
 
-  ($('<div id="row3">').addClass('rowWrap')).appendTo('.spInfo');
-  ($("<div>").addClass("spRelInfo").text("Release date info here")).appendTo('#row3');
-  ($("<div>").addClass("spSocial").text("Social media connection aspects here?")).appendTo('#row3');
+  cell1a.innerHTML = ($("<div>").addClass("spImg").append(
+    $('<img>').addClass("spImgT").attr('src',result.imageList[showID]))).html();
+  cell1b.innerHTML = ($("<div>").addClass("spDesc").text("descripList should populate here")).html();  
+
+  var row2 = tbl.insertRow(2);
+  var cell2a = row2.insertCell(0);
+  var cell2b = row2.insertCell(1);  
+
+  cell2a.innerHTML = ($("<div>").addClass("spRelInfo").text("Release date info here")).html();
+  cell2b.innerHTML = ($("<div>").addClass("spSocial").text("Social media connection aspects here?")).html();
 
   });
 }
@@ -230,7 +249,12 @@ function makeShowPage(showname){
 function storeListPlease(){
   //should only store if there is stuff in the list?
     if(show_list != undefined && show_list.length != 0){
-      storage.set({"showList" : show_list}, function(listcheck){console.log("show list should have been pushed? It's size is: " + listcheck.showList.length)});
+      storage.set({"showList" : show_list}, function(listcheck){
+      var today = Date.now();
+      storage.set({"showListDate" : today}, function(check){
+            //console.log("show list created to empty. show list : " + check.showList);
+      });
+      console.log("show list should have been pushed? It's size is: " + listcheck.showList.length)});
     }
 
     if(images != undefined && images.length != 0){
@@ -244,6 +268,7 @@ function storeListPlease(){
     }
 
     if(descrips != undefined && descrips.length !=0){
+        descrips = [];
         storage.set({"descripList" : descrips});
     }
 }
@@ -276,13 +301,8 @@ function getAllAnimeYears(){
           loadWikiData(i);
         }
         
-        var today = Date.now();
-        storage.set({"showListDate" : today}, function(datecheck){
+        storage.set({"showList" : showsToStore}, function(datecheck){
           //console.log("stored date is: " + datecheck.showListDate)
-          storage.set({"showList" : showsToStore}, function(check){
-            //console.log("show list created to empty. show list : " + check.showList);
-          });
-
         });
         
 
@@ -394,7 +414,35 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('shows').value = "";
 
         //Handles adding the show to the user's list
-        storage.get(function(result){
+        addShowToBox(show,true);
+
+        //Just making sure the lists is stored as soon as possible
+        storeListPlease();
+        
+    });
+
+    upcoming.addEventListener('click', function() {
+          console.log("The user wants to view upcoming page...");
+
+          document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
+
+          //Just making sure the show list is stored as soon as possible
+          storeListPlease();
+                  
+    });
+
+    toHome.addEventListener('click',function() {
+        console.log("The user wants to return to home page...");
+
+        createTable("home");
+
+        storeListPlease();
+    });
+
+});
+
+function addShowToBox(show,fromHome){
+  storage.get(function(result){
 
         //makes sure it is actually a show and then adds it to the user's list
         var isShow = false;
@@ -426,38 +474,12 @@ document.addEventListener('DOMContentLoaded', function() {
               result["shows"] = [show];
             }
             storage.set(result);
-         
-            createTable("home");
+            if(fromHome){
+              createTable("home");
+            }
         }
         else{
           console.log("Get here by putting in a show already on your list or something that isn't a show! We need to notify the user somehow.");
         }
         });
-
-        //Just making sure the lists is stored as soon as possible
-        storeListPlease();
-        
-    });
-
-    upcoming.addEventListener('click', function() {
-          console.log("The user wants to view upcoming page...");
-
-          document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
-
-          //Just making sure the show list is stored as soon as possible
-          storeListPlease();
-                  
-    });
-
-    toHome.addEventListener('click',function() {
-        console.log("The user wants to return to home page...");
-
-        createTable("home");
-
-        storeListPlease();
-    });
-
-    //spAdd.addEventListener('click',)
-
-});
-
+}
