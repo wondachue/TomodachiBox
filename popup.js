@@ -23,21 +23,48 @@ var fb_userID = "nope";
 
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
 
-$(function() {
+function getFileData(){
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", "store.txt", false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                show_list = allText.split(",");
+                storage.set(
+                  {"showList" : show_list},
+                  function(result){
+                    console.log(result);
+                    $( "#shows" ).autocomplete({
+                      source: show_list
+                    });
+                  }
+                );
+            }
+        }
+    }
+    rawFile.send(null);
+}
+function getShows(){
   storage.get(function(result){
-
     if(result.showList != undefined){
       $( "#shows" ).autocomplete({
         source: result.showList
       });
     }
     else{
-      $( "#shows" ).autocomplete({
-        source: show_list
-      });  
+      getFileData();
     }
   });
-});
+  /*for(var i = 0; i < showList.length; i++){
+    loadShowData(i);
+    numAnime++;
+  }*/
+}
+
 
 $(document).ready(function() { 
   $('<iframe />', {
@@ -248,14 +275,6 @@ function makeShowPage(showname){
 
 function storeListPlease(){
   //should only store if there is stuff in the list?
-    if(show_list != undefined && show_list.length != 0){
-      storage.set({"showList" : show_list}, function(listcheck){
-      var today = Date.now();
-      storage.set({"showListDate" : today}, function(check){
-            //console.log("show list created to empty. show list : " + check.showList);
-      });
-      console.log("show list should have been pushed? It's size is: " + listcheck.showList.length)});
-    }
 
     if(images != undefined && images.length != 0){
       try{
@@ -276,86 +295,8 @@ function storeListPlease(){
 
 function getAllAnimeYears(){
   reloadTwitterButton("Hamtaro");
+  getShows();
   createTable("home"); 
-
-  storage.get(function(result){
-
-    //accounting for potential first load
-    if(result.showListDate == undefined){
-      dateToStore = 0;
-    }
-    else{
-      dateToStore = result.showListDate;
-    }
-
-    if(result.showList == undefined){
-      //console.log("Undefined show list was caught...");
-      
-      var lastPulled = Date.now() - dateToStore;
-      var updateWhen = 31556952000; //num milliseconds in a year
-     
-      if(lastPulled > updateWhen){
-        //console.log("Need to update the show list in storage...");
-        
-        for(var i = 1961; i <= 2015; i++){
-          loadWikiData(i);
-        }
-        
-        storage.set({"showList" : showsToStore}, function(datecheck){
-          //console.log("stored date is: " + datecheck.showListDate)
-        });
-        
-
-        
-      }
-      else{
-        //console.log("It's not time to update show list...");
-
-      }
-      
-      storage.get(function(results){
-        //console.log("After updating the show list if needed, there are " + results.showList.length + " items in the stored show list.");
-      });
-
-
-     }
-    else{
-      //console.log("Show list was not undefined, will handle this later?...");
-      storage.get(function(result){console.log("There should be data in the stored list. Exactly " + result.showList.length + " items are stored there.")});
-      
-    }
-
-    
-
-  });
-}
-
-function loadWikiData(year)
-{
-    var xmlhttp;
-    if (window.XMLHttpRequest)
-    {
-        xmlhttp=new XMLHttpRequest();
-    }
-    xmlhttp.onreadystatechange=function()
-    {
-      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-      {
-            var wiki_list = xmlhttp.responseText;
-            var wiki_html = $("#mw-pages", wiki_list);
-            $("a", wiki_html).each(function(){
-              if($(this).attr("title") != "undefined" && $(this).attr("title").length != 0 && $(this).attr("title") != "Wikipedia:FAQ/Categories"){
-                show_list[numAnime] = $(this).attr("title");
-                loadShowData(numAnime);
-                numAnime++;
-              }
-            });
-            
-      }
-      
-    }
-    xmlhttp.open("GET","http://en.wikipedia.org/wiki/Category:" + year +"_anime_television_series",true);
-    xmlhttp.send();
 }
 
 function loadShowData(this_num)
