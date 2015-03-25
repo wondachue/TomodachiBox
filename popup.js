@@ -4,17 +4,14 @@ var numAnime = 0;
 var show_list = [];
 var images = [];
 var descrips = [];
+
 var fb_shows_user = [];
 var fb_shows_friends = [];
 
 //For storage and user show list
 var storage = chrome.storage.local;
-
-var usershows = {};
-
-var dateToStore = -1;
-var showsToStore = {};
-
+var usershows = [];
+var sharedShows = [];
 
 //Hanlding of the Social Media
 var fb_connectStatus = "nope";
@@ -37,7 +34,7 @@ function getFileData(){
                 storage.set(
                   {"showList" : show_list},
                   function(result){
-                    console.log(result);
+                    //console.log(result);
                     $( "#shows" ).autocomplete({
                       source: show_list
                     });
@@ -48,6 +45,7 @@ function getFileData(){
     }
     rawFile.send(null);
 }
+
 function getShows(){
   storage.get(function(result){
     if(result.showList != undefined){
@@ -59,12 +57,7 @@ function getShows(){
       getFileData();
     }
   });
-  /*for(var i = 0; i < showList.length; i++){
-    loadShowData(i);
-    numAnime++;
-  }*/
 }
-
 
 $(document).ready(function() { 
   $('<iframe />', {
@@ -114,6 +107,8 @@ function getFBInfo(){
             for(elem in data_fb.television.data){
                 fb_shows_user.push(data_fb.television.data[elem].name);
             }
+            console.log("Attempting to create home view from within fb magic. Current FB friend shows: " + fb_shows_friends.length);
+            createTable("home");
       }
       
     }
@@ -148,10 +143,58 @@ function createTable(page){
   if(page == "home"){    
     table.innerHTML = "";
     
-    storage.get('shows',function(result){ 
+    var temp = "http://media1.popsugar-assets.com/files/2014/02/18/159/n/28443503/5945b74bba9e1117_shutterstock_105361820.jpg.xxxlarge/i/Calories-Sushi.jpg";
+
+    storage.get(function(result){ 
       
+      for(var i = 0; i < fb_shows_friends.length; i++){
+        var index = $.inArray(fb_shows_friends[i],result.showList);
+        //console.log("Friend show " + fb_shows_friends[i] + " is an anime? " + index);
+        if(index != -1 && $.inArray(fb_shows_friends[i],sharedShows) == -1){
+          if(sharedShows instanceof Array){
+            sharedShows.push(fb_shows_friends[i]);
+          }
+          else{
+            sharedShows = fb_shows_friends[i];
+          }
+        }
+      }
+      console.log("FB friend list size: " + fb_shows_friends.length + " and shared size: " + sharedShows);
+
+          
+      for(var ss = 0; ss < sharedShows.length; ss+=2){
+        var row = table.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        row.className = "row";
+      
+        ($("<div>").addClass("boxF").append(
+          $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<a class='titlelink' id = '" + sharedShows[ss] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss] + "'>" + 
+                  sharedShows[ss] + "</a><br><img id = 'showid_" + ss + "' src ='" + 
+                  temp + "' class='img-circle sushi'></img>"))))).appendTo(cell1);
+          
+        if(sharedShows.length % 2 != 0 && ss == sharedShows.length-1){
+            ($("<div>").addClass("boxF").append(
+              $("<div>").addClass("innerbox").append(
+                $("<div>").addClass("colRoll").append(
+                  $("<div>").addClass("roll").text(""))))).appendTo(cell2); 
+          }
+          else{
+            ($("<div>").addClass("boxF").append(
+              $("<div>").addClass("innerbox").append(
+                $("<div>").addClass("colRoll").append(
+                  $("<div>").addClass("roll").html(
+                    "<a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + sharedShows[ss+1] + "</a><br><img id = 'showid_" + ss + "' src ='" + temp + "' class='img-circle sushi'></img>"))))).appendTo(cell2);
+          }
+      }
+
+
       if(result.shows == null || result.shows == undefined){
-        table.innerHTML = "Add shows to your list with the search bar above!<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :(";
+        //table.innerHTML = "Add shows to your list with the search bar above!<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :(";
+        
       }
       else{
         var size = result.shows.length;
@@ -161,16 +204,14 @@ function createTable(page){
           var cell1 = row.insertCell(0);
           var cell2 = row.insertCell(1);
           row.className = "row";
-      
-          var temp = "http://media1.popsugar-assets.com/files/2014/02/18/159/n/28443503/5945b74bba9e1117_shutterstock_105361820.jpg.xxxlarge/i/Calories-Sushi.jpg";
           
           var showID = -1;
           if(result.showList != null || result.showList != undefined){
             var showID = $.inArray(result.shows[cell],result.showList);
           }
 
-          console.log("A found show id was " + showID);
-          cell1.innerHTML = ($("<div>").addClass("box").append(
+          //console.log("A found show id was " + showID);
+          cell1.innerHTML = ($("<div>").addClass("boxU").append(
             $("<div>").addClass("innerbox").append(
               $("<div>").addClass("colRoll").append(
                 $("<div>").addClass("roll").html(
@@ -181,7 +222,7 @@ function createTable(page){
           //leaving a trailing empty box if the num of user shows is odd, or filling it as needed~
           //--LEFT UNDONE-- putting the trailing box at the bottom?
           if(size % 2 != 0 && cell == size-1){
-            cell2.innerHTML = ($("<div>").addClass("box").append(
+            cell2.innerHTML = ($("<div>").addClass("boxU").append(
               $("<div>").addClass("innerbox").append(
                 $("<div>").addClass("colRoll").append(
                   $("<div>").addClass("roll").text(""))))).html(); 
@@ -192,19 +233,17 @@ function createTable(page){
               showID = $.inArray(result.shows[cell+1],result.showList);
             }
 
-            cell2.innerHTML = ($("<div>").addClass("box").append(
+            cell2.innerHTML = ($("<div>").addClass("boxU").append(
               $("<div>").addClass("innerbox").append(
                 $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").html("<a href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a><br><img id = 'showid_" + showID + "' src ='" + temp + "' class='img-circle sushi'></img>"))))).html();
+                  $("<div>").addClass("roll").html(
+                    "<a class='titlelink' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a><br><img id = 'showid_" + showID + "' src ='" + temp + "' class='img-circle sushi'></img>"))))).html();
           }
 
         }
       }
-        addLinkOnClick(result.shows); 
-        //console.log("Attempting to store list for the first time...");
-        storeListPlease();
-
-        //console.log("Done with creation of home page....");
+       
+      addLinkOnClick(result.shows); 
 
     });
   }
@@ -259,8 +298,8 @@ function makeShowPage(showname){
   var cell1a = row1.insertCell(0);
   var cell1b = row1.insertCell(1);
 
-  cell1a.innerHTML = ($("<div>").addClass("spImg").append(
-    $('<img>').addClass("spImgT").attr('src',result.imageList[showID]))).html();
+  cell1a.innerHTML = ($("<div>").addClass("spImg")/*.append(
+    $('<img>').addClass("spImgT").attr('src',result.imageList[showID]))*/).html();
   cell1b.innerHTML = ($("<div>").addClass("spDesc").text("descripList should populate here")).html();  
 
   var row2 = tbl.insertRow(2);

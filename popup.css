@@ -41,10 +41,15 @@
   border-radius: 70px;
   box-shadow: inset 0px 0px 10px white;
 }
-.box{
+.boxU{
   background: -webkit-linear-gradient(70deg, black, red, #f2f0ee);
   border: 3px solid black;
   box-shadow: inset 0px 0px 12px red;        
+}
+.boxF{
+  background: -webkit-linear-gradient(70deg, black, blue, #f2f0ee);
+  border: 3px solid black;
+  box-shadow: inset 0px 0px 12px blue;   
 }
 .innerbox{
   background: -webkit-linear-gradient(#990021, black);
