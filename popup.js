@@ -126,7 +126,6 @@ function getFBInfo(){
             for(elem in data_fb.television.data){
                 fb_shows_user.push(data_fb.television.data[elem].name);
             }
-            //console.log("Attempting to create home view from within fb magic. Current FB friend shows: " + fb_shows_friends.length);
             createTable("home");
       }
       
@@ -169,7 +168,6 @@ function createTable(page){
       
       for(var i = 0; i < fb_shows_friends.length; i++){
         var index = $.inArray(fb_shows_friends[i],result.showList);
-        //console.log("Friend show " + fb_shows_friends[i] + " is an anime? " + index);
         if(index != -1 && $.inArray(fb_shows_friends[i],sharedShows) == -1){
           if(sharedShows instanceof Array){
             sharedShows.push(fb_shows_friends[i]);
@@ -179,8 +177,6 @@ function createTable(page){
           }
         }
       }
-      //console.log("FB friend list size: " + fb_shows_friends.length + " and shared size: " + sharedShows);
-
           
       for(var ss = 0; ss < sharedShows.length; ss+=2){
         var row = table.insertRow(0);
@@ -244,7 +240,6 @@ function createTable(page){
             var showID = $.inArray(result.shows[cell],result.showList);
           }
 
-          //console.log("A found show id was " + showID);
           cell1.innerHTML = ($("<div>").addClass("boxU").append(
             $("<div>").addClass("innerbox").append(
               $("<div>").addClass("colRoll").append(
@@ -284,6 +279,20 @@ function createTable(page){
 
     });
   }
+  if(page == "help"){
+    
+    ($('<h4>').text("Why are some boxes Red and some boxes Blue?")).appendTo('#bg');
+    ($('<p>').text("The boxes that are Red contain the shows specifically in your box. The boxes that you see as Blue are shows that your Facebook friends have liked if you connected to Facebook!")).appendTo('#bg');
+    
+    ($('<h4>').text("Why do some boxes only have a sushi in them?")).appendTo('#bg');
+    ($('<p>').text("This sushi is a placeholder for a show. Add more shows to your TomodachiBox to make it disappear!")).appendTo(bg);
+    
+    ($('<h4>').text("What do I do if something seems drastically wrong???")).appendTo('#bg');
+    ($('<p>').text("Please! We urge you to contact us (the development team) as soon as possible! We don't bite, and we would be happy to help you. :) ")).appendTo('#bg');
+    
+    //($('<h4>').text()).appendTo(bg);
+    //($('<p>').text()).appendTo(bg);
+  }
   else{
     //console.log("something horrible happened to get here @_@");
   }
@@ -295,7 +304,6 @@ function addLinkOnClick(showArray){
   for(var i = 0; i < links.length; i++){
     var link = links[i];
     link.onclick = function(){
-       //console.log("The id of the clicked link should be: " + this.id);
        makeShowPage(this.id);
     }
   }
@@ -398,6 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var addToBox = document.getElementById('addToBox');
     var upcoming = document.getElementById('upcoming');
     var toHome = document.getElementById('toHome');
+    var helpPls = document.getElementById('helpPls');
     
     addToBox.addEventListener('click', function() {
         /*
@@ -432,6 +441,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         createTable("home");
     });
+
+    helpPls.addEventListener('click',function() {
+        console.log("The user wants to get help!...");
+
+        createTable("help");
+    });    
 
 });
 

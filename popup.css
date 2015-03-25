@@ -1,4 +1,7 @@
 /*Basic Styling*/
+h4{
+  font-weight: bold;
+}
 #bg{
   background-color: white;
   width: 430px;
