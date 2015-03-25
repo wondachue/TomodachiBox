@@ -15,7 +15,6 @@
   "content_scripts": [
   {
     "matches": ["http://cise.ufl.edu/~mdwyer/index.html"],
-    //"css": ["popup.css"],
     "js": ["fb.js", "popup.js"],
     "run_at": "document_start",
     "all_frames" : false
@@ -32,7 +31,6 @@
     "http://bits.wikimedia.org/",
     "http://*.twitter.com/*",
     "http://*.twing.com/*",
-    "tabs",
     "https://apis.google.com/*",
     "https://developers.facebook.com/docs/plugins/",
     "https://www.facebook.com/",
