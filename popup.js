@@ -23,9 +23,9 @@ var fb_userID = "nope";
 
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
 
-function getFileData(){
+function getFileData(thisFile){
     var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", "store.txt", false);
+    rawFile.open("GET", thisFile, false);
     rawFile.onreadystatechange = function ()
     {
         if(rawFile.readyState === 4)
@@ -33,16 +33,32 @@ function getFileData(){
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 var allText = rawFile.responseText;
-                show_list = allText.split(",");
-                storage.set(
-                  {"showList" : show_list},
-                  function(result){
-                    console.log(result);
-                    $( "#shows" ).autocomplete({
-                      source: show_list
-                    });
-                  }
-                );
+                if(thisFile === "store.txt"){
+                  show_list = allText.split(",");
+                  storage.set(
+                    {"showList" : show_list},
+                    function(result){
+                      console.log(result);
+                      $( "#shows" ).autocomplete({
+                        source: show_list
+                      });
+                    }
+                  );
+                }
+                else{
+                  images = allText.split(",");
+                  storage.set(
+                    {"imageList" : images},
+                    function(result){
+                      console.log(result);
+                    }
+                  );
+                }
+                /*for(var i = 0; i < show_list.length; i++){
+                  loadShowData(i);
+                }*/
+
+
             }
         }
     }
@@ -56,13 +72,11 @@ function getShows(){
       });
     }
     else{
-      getFileData();
+      getFileData("store.txt");
+      getFileData("imageStore.txt");
     }
   });
-  /*for(var i = 0; i < showList.length; i++){
-    loadShowData(i);
-    numAnime++;
-  }*/
+
 }
 
 
@@ -201,10 +215,6 @@ function createTable(page){
         }
       }
         addLinkOnClick(result.shows); 
-        //console.log("Attempting to store list for the first time...");
-        storeListPlease();
-
-        //console.log("Done with creation of home page....");
 
     });
   }
@@ -223,9 +233,6 @@ function addLinkOnClick(showArray){
        makeShowPage(this.id);
     }
   }
-
-  //Just making sure the show list is stored as soon as possible
-  storeListPlease();
 }
 
 function makeShowPage(showname){
@@ -273,26 +280,6 @@ function makeShowPage(showname){
   });
 }
 
-function storeListPlease(){
-  //should only store if there is stuff in the list?
-
-    if(images != undefined && images.length != 0){
-      try{
-        storage.set({"imageList" : images}, function(result){
-          document.getElementById("showid_" + this_num).src = result.imageList[this_num]});
-      }
-      catch(err){
-        //TypeError: Cannot set property 'src' of null
-      }
-    }
-
-    if(descrips != undefined && descrips.length !=0){
-        descrips = [];
-        storage.set({"descripList" : descrips});
-    }
-}
-
-
 function getAllAnimeYears(){
   reloadTwitterButton("Hamtaro");
   getShows();
@@ -314,7 +301,7 @@ function loadShowData(this_num)
             var wiki_infobox = $(".infobox", wiki_page);
             images[this_num] = "http:" + $("img", wiki_infobox).attr('src');
             var wiki_descrip = $("#mw-content-text", wiki_page);
-            descrips[this_num] = $("p", wiki_descrip).first();            
+            descrips[this_num] = $("p", wiki_descrip).first();         
       }
       
     }
@@ -341,11 +328,19 @@ function reloadTwitterButton(show){
 
 //EventListener that listens once the extension loads
 document.addEventListener('DOMContentLoaded', function() {
+
     var addToBox = document.getElementById('addToBox');
     var upcoming = document.getElementById('upcoming');
     var toHome = document.getElementById('toHome');
     
     addToBox.addEventListener('click', function() {
+      /*
+                    var hiddenElement = document.createElement('a');
+              hiddenElement.href = 'data:attachment/text,' + encodeURI(images);
+              hiddenElement.target = '_blank';
+              hiddenElement.download = 'myFile.txt';
+              hiddenElement.click();
+              */
         var show = document.getElementById('shows').value;
 
         //reload twitter button with new show
@@ -356,9 +351,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         //Handles adding the show to the user's list
         addShowToBox(show,true);
-
-        //Just making sure the lists is stored as soon as possible
-        storeListPlease();
         
     });
 
@@ -366,9 +358,6 @@ document.addEventListener('DOMContentLoaded', function() {
           console.log("The user wants to view upcoming page...");
 
           document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
-
-          //Just making sure the show list is stored as soon as possible
-          storeListPlease();
                   
     });
 
@@ -376,8 +365,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("The user wants to return to home page...");
 
         createTable("home");
-
-        storeListPlease();
     });
 
 });
