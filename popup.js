@@ -20,9 +20,9 @@ var fb_userID = "nope";
 
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
 
-function getFileData(){
+function getFileData(thisFile){
     var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", "store.txt", false);
+    rawFile.open("GET", thisFile, false);
     rawFile.onreadystatechange = function ()
     {
         if(rawFile.readyState === 4)
@@ -30,16 +30,33 @@ function getFileData(){
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 var allText = rawFile.responseText;
-                show_list = allText.split(",");
-                storage.set(
-                  {"showList" : show_list},
-                  function(result){
-                    //console.log(result);
-                    $( "#shows" ).autocomplete({
-                      source: show_list
-                    });
-                  }
-                );
+
+                if(thisFile === "store.txt"){
+                  show_list = allText.split(",");
+                  storage.set(
+                    {"showList" : show_list},
+                    function(result){
+                      console.log(result);
+                      $( "#shows" ).autocomplete({
+                        source: show_list
+                      });
+                    }
+                  );
+                }
+                else{
+                  images = allText.split(",");
+                  storage.set(
+                    {"imageList" : images},
+                    function(result){
+                      console.log(result);
+                    }
+                  );
+                }
+                /*for(var i = 0; i < show_list.length; i++){
+                  loadShowData(i);
+                }*/
+
+
             }
         }
     }
@@ -54,9 +71,11 @@ function getShows(){
       });
     }
     else{
-      getFileData();
+      getFileData("store.txt");
+      getFileData("imageStore.txt");
     }
   });
+ 
 }
 
 $(document).ready(function() { 
@@ -107,7 +126,7 @@ function getFBInfo(){
             for(elem in data_fb.television.data){
                 fb_shows_user.push(data_fb.television.data[elem].name);
             }
-            console.log("Attempting to create home view from within fb magic. Current FB friend shows: " + fb_shows_friends.length);
+            //console.log("Attempting to create home view from within fb magic. Current FB friend shows: " + fb_shows_friends.length);
             createTable("home");
       }
       
@@ -136,6 +155,7 @@ function createTable(page){
   var bg = document.getElementById('bg');
   bg.innerHTML = "";  
 
+  $('<p id="helper">').appendTo('#bg');
   $('<table id="show_grid">').appendTo('#bg');
 
   var table = document.getElementById("show_grid");
@@ -159,7 +179,7 @@ function createTable(page){
           }
         }
       }
-      console.log("FB friend list size: " + fb_shows_friends.length + " and shared size: " + sharedShows);
+      //console.log("FB friend list size: " + fb_shows_friends.length + " and shared size: " + sharedShows);
 
           
       for(var ss = 0; ss < sharedShows.length; ss+=2){
@@ -168,32 +188,46 @@ function createTable(page){
         var cell2 = row.insertCell(1);
         row.className = "row";
       
+        var showID = -1;
+        if(result.showList !=undefined){
+          showID = $.inArray(sharedShows[ss],result.showList);
+        }
+
         ($("<div>").addClass("boxF").append(
           $("<div>").addClass("innerbox").append(
             $("<div>").addClass("colRoll").append(
               $("<div>").addClass("roll").html(
                   "<a class='titlelink' id = '" + sharedShows[ss] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss] + "'>" + 
-                  sharedShows[ss] + "</a><br><img id = 'showid_" + ss + "' src ='" + 
-                  temp + "' class='img-circle sushi'></img>"))))).appendTo(cell1);
+                  sharedShows[ss] + "</a><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi'></img>"))))).appendTo(cell1);
           
         if(sharedShows.length % 2 != 0 && ss == sharedShows.length-1){
             ($("<div>").addClass("boxF").append(
               $("<div>").addClass("innerbox").append(
                 $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").text(""))))).appendTo(cell2); 
+                  $("<div>").addClass("roll").html("<img src ='" + 
+                    temp + "' class='img-circle sushi'>"))))).appendTo(cell2); 
           }
           else{
+
+          var showID = -1;
+          if(result.showList !=undefined){
+            showID = $.inArray(sharedShows[ss+1],result.showList);
+          }
             ($("<div>").addClass("boxF").append(
               $("<div>").addClass("innerbox").append(
                 $("<div>").addClass("colRoll").append(
                   $("<div>").addClass("roll").html(
-                    "<a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + sharedShows[ss+1] + "</a><br><img id = 'showid_" + ss + "' src ='" + temp + "' class='img-circle sushi'></img>"))))).appendTo(cell2);
+                    "<a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + 
+                    sharedShows[ss+1] + "</a><br><img src ='" + 
+                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).appendTo(cell2);
           }
       }
 
 
       if(result.shows == null || result.shows == undefined){
-        //table.innerHTML = "Add shows to your list with the search bar above!<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :(";
+        ($('#helper').text("Add shows to your list with the search bar above!"/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
+          ));
         
       }
       else{
@@ -216,8 +250,8 @@ function createTable(page){
               $("<div>").addClass("colRoll").append(
                 $("<div>").addClass("roll").html(
                     "<a class='titlelink' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + 
-                    result.shows[cell] + "</a><br><img id = 'showid_" + showID + "' src ='" + 
-                    temp + "' class='img-circle sushi'></img>"))))).html();
+                    result.shows[cell] + "</a><br><img src ='" + 
+                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).html();
           
           //leaving a trailing empty box if the num of user shows is odd, or filling it as needed~
           //--LEFT UNDONE-- putting the trailing box at the bottom?
@@ -225,7 +259,8 @@ function createTable(page){
             cell2.innerHTML = ($("<div>").addClass("boxU").append(
               $("<div>").addClass("innerbox").append(
                 $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").text(""))))).html(); 
+                  $("<div>").addClass("roll").html("<img src ='" + 
+                    temp + "' class='img-circle sushi'>"))))).html(); 
           }
           else{
             var showID = -1;
@@ -237,12 +272,14 @@ function createTable(page){
               $("<div>").addClass("innerbox").append(
                 $("<div>").addClass("colRoll").append(
                   $("<div>").addClass("roll").html(
-                    "<a class='titlelink' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a><br><img id = 'showid_" + showID + "' src ='" + temp + "' class='img-circle sushi'></img>"))))).html();
+                    "<a class='titlelink' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + 
+                    result.shows[cell+1] + "</a><br><img src ='" + 
+                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).html();
           }
 
         }
       }
-       
+
       addLinkOnClick(result.shows); 
 
     });
@@ -262,9 +299,6 @@ function addLinkOnClick(showArray){
        makeShowPage(this.id);
     }
   }
-
-  //Just making sure the show list is stored as soon as possible
-  storeListPlease();
 }
 
 function makeShowPage(showname){
@@ -298,8 +332,8 @@ function makeShowPage(showname){
   var cell1a = row1.insertCell(0);
   var cell1b = row1.insertCell(1);
 
-  cell1a.innerHTML = ($("<div>").addClass("spImg")/*.append(
-    $('<img>').addClass("spImgT").attr('src',result.imageList[showID]))*/).html();
+  cell1a.innerHTML = ($("<div>").addClass("spImg").append(
+    $('<img>').addClass("spImgT").attr('src',result.imageList[showID]))).html();
   cell1b.innerHTML = ($("<div>").addClass("spDesc").text("descripList should populate here")).html();  
 
   var row2 = tbl.insertRow(2);
@@ -311,26 +345,6 @@ function makeShowPage(showname){
 
   });
 }
-
-function storeListPlease(){
-  //should only store if there is stuff in the list?
-
-    if(images != undefined && images.length != 0){
-      try{
-        storage.set({"imageList" : images}, function(result){
-          document.getElementById("showid_" + this_num).src = result.imageList[this_num]});
-      }
-      catch(err){
-        //TypeError: Cannot set property 'src' of null
-      }
-    }
-
-    if(descrips != undefined && descrips.length !=0){
-        descrips = [];
-        storage.set({"descripList" : descrips});
-    }
-}
-
 
 function getAllAnimeYears(){
   reloadTwitterButton("Hamtaro");
@@ -353,7 +367,7 @@ function loadShowData(this_num)
             var wiki_infobox = $(".infobox", wiki_page);
             images[this_num] = "http:" + $("img", wiki_infobox).attr('src');
             var wiki_descrip = $("#mw-content-text", wiki_page);
-            descrips[this_num] = $("p", wiki_descrip).first();            
+            descrips[this_num] = $("p", wiki_descrip).first();         
       }
       
     }
@@ -380,11 +394,19 @@ function reloadTwitterButton(show){
 
 //EventListener that listens once the extension loads
 document.addEventListener('DOMContentLoaded', function() {
+
     var addToBox = document.getElementById('addToBox');
     var upcoming = document.getElementById('upcoming');
     var toHome = document.getElementById('toHome');
     
     addToBox.addEventListener('click', function() {
+        /*
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:attachment/text,' + encodeURI(images);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'myFile.txt';
+        hiddenElement.click();
+        */
         var show = document.getElementById('shows').value;
 
         //reload twitter button with new show
@@ -395,9 +417,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         //Handles adding the show to the user's list
         addShowToBox(show,true);
-
-        //Just making sure the lists is stored as soon as possible
-        storeListPlease();
         
     });
 
@@ -405,9 +424,6 @@ document.addEventListener('DOMContentLoaded', function() {
           console.log("The user wants to view upcoming page...");
 
           document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
-
-          //Just making sure the show list is stored as soon as possible
-          storeListPlease();
                   
     });
 
@@ -415,8 +431,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("The user wants to return to home page...");
 
         createTable("home");
-
-        storeListPlease();
     });
 
 });
