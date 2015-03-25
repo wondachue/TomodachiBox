@@ -38,6 +38,7 @@
     "https://www.facebook.com/",
     "https://connect.facebook.net/en_US/all.js",
     "https://cise.ufl.edu/~mdwyer/index.html",
-	"http://animecalendar.net/"
+	   "http://animecalendar.net/",
+     "https://graph.facebook.com/v2.2/me/feed"
   ]
 }

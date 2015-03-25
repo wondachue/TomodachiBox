@@ -23,6 +23,7 @@ var fb_userID = "nope";
 
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
 
+
 function getFileData(thisFile){
     var rawFile = new XMLHttpRequest();
     rawFile.open("GET", thisFile, false);
@@ -96,7 +97,23 @@ $(document).ready(function() {
   
   getAllAnimeYears();
 });
-
+function postFB(){
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        xmlhttp=new XMLHttpRequest();
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+            var fbjson = xmlhttp.responseText;
+            var data_fb = JSON.parse( fbjson );
+      }
+    }
+    xmlhttp.open("POST","https://graph.facebook.com/v2.2/me/feed?access_token=" + fb_accessToken + "&message=hello&caption=world&description=test",true);
+    xmlhttp.send();
+}
 function getFBInfo(){
     var xmlhttp;
     if (window.XMLHttpRequest)
@@ -332,7 +349,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var addToBox = document.getElementById('addToBox');
     var upcoming = document.getElementById('upcoming');
     var toHome = document.getElementById('toHome');
-    
+    var fb_button = document.getElementById('fb_post_button');
+
     addToBox.addEventListener('click', function() {
       /*
                     var hiddenElement = document.createElement('a');
@@ -341,6 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
               hiddenElement.download = 'myFile.txt';
               hiddenElement.click();
               */
+        chrome.browserAction.setIcon({path: 'icon.png'});
         var show = document.getElementById('shows').value;
 
         //reload twitter button with new show
@@ -365,6 +384,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("The user wants to return to home page...");
 
         createTable("home");
+    });
+    fb_button.addEventListener('click',function() {
+        postFB();
     });
 
 });
