@@ -1,4 +1,6 @@
 var numAnime = 0;
+var nameNum = 0;
+var today = new Date();
 
 //Handling of the show list
 var show_list = [];
@@ -13,12 +15,87 @@ var storage = chrome.storage.local;
 var usershows = [];
 var sharedShows = [];
 
+//Storage for the episode dates
+var month = [];
+var this_month = today.getMonth()+1;
+var this_year = today.getFullYear();
+
 //Hanlding of the Social Media
 var fb_connectStatus = "nope";
 var fb_accessToken = "nope";
 var fb_userID = "nope";
 
 window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
+
+function loadEpisodeData()
+{
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        xmlhttp=new XMLHttpRequest();
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+
+            var date_page = xmlhttp.responseText;
+			var date_table = $("table",date_page); //calling the table 
+			//for table 
+			var tbody1 = $("tbody", date_table);
+			$("td", tbody1).each(function(){
+				var thead_data = $("thead", this);
+				var first_tr = $("tr", thead_data);
+				var h2_thing = $("h2", first_tr);
+				var date = $("a", h2_thing).attr("href");
+				if(date != undefined && date.length != 0){
+				console.log("the date is: " + date);
+				}
+				
+				var tbody_data = $("tbody:first", this);
+				var day = [];
+				$("tr", tbody_data).each(function(){
+					var tr_stuff = this;
+					var h3stuff = $("h3",tr_stuff);
+					var show_title = $("a", h3stuff).attr("href");
+					if(show_title != undefined && show_title.length != 0){
+						var show_arr = show_title.split("/");
+						var name = show_arr[3].replace(/_/g, ' ');
+						show_date[nameNum] = name;
+						day.push(name);
+						console.log("the show title is: " + show_date[nameNum]);
+						nameNum++;
+					}
+				});
+				month[date] = day;
+			});
+			console.log("month is:");
+			console.log(month);
+		//console.log("the show title is: " + show_date);
+			/*
+			$("thead",date_table)(function(){
+				var h2 = $("h2", this);
+				var date = $("a", h2).attr("href");
+				console.log(date);
+				//do stuff to get variables
+				//
+			}); //maybe? as a start? im not sure
+
+			
+			createTable("upcoming");
+			*/
+      }
+      
+    }
+    xmlhttp.open("GET","http://animecalendar.net/" + this_year + "/" + this_month,true);
+    xmlhttp.send();
+}
+
+function getEpisodeDates(){
+	for(var i = this_month; i <= i+1; i++){
+    loadEpisodeData();
+  }
+} 
 
 function getFileData(thisFile){
     var rawFile = new XMLHttpRequest();
@@ -73,6 +150,7 @@ function getShows(){
     else{
       getFileData("store.txt");
       getFileData("imageStore.txt");
+	  getEpisodeDates();
     }
   });
  
@@ -94,7 +172,23 @@ $(document).ready(function() {
   
   getAllAnimeYears();
 });
-
+function postFB(){
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        xmlhttp=new XMLHttpRequest();
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+            var fbjson = xmlhttp.responseText;
+            var data_fb = JSON.parse( fbjson );
+      }
+    }
+    xmlhttp.open("POST","https://graph.facebook.com/v2.2/me/feed?access_token=" + fb_accessToken + "&message=hello&caption=world&description=test",true);
+    xmlhttp.send();
+}
 function getFBInfo(){
     var xmlhttp;
     if (window.XMLHttpRequest)
@@ -407,15 +501,19 @@ document.addEventListener('DOMContentLoaded', function() {
     var upcoming = document.getElementById('upcoming');
     var toHome = document.getElementById('toHome');
     var helpPls = document.getElementById('helpPls');
-    
+    var fb_button = document.getElementById('fb_post_button');
+
     addToBox.addEventListener('click', function() {
-        /*
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:attachment/text,' + encodeURI(images);
-        hiddenElement.target = '_blank';
-        hiddenElement.download = 'myFile.txt';
-        hiddenElement.click();
-        */
+
+      /*
+                    var hiddenElement = document.createElement('a');
+              hiddenElement.href = 'data:attachment/text,' + encodeURI(images);
+              hiddenElement.target = '_blank';
+              hiddenElement.download = 'myFile.txt';
+              hiddenElement.click();
+              */
+        chrome.browserAction.setIcon({path: 'icon.png'});
+
         var show = document.getElementById('shows').value;
 
         //reload twitter button with new show
@@ -446,7 +544,11 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("The user wants to get help!...");
 
         createTable("help");
-    });    
+    }); 
+
+    fb_button.addEventListener('click',function() {
+        postFB();
+    });   
 
 });
 
