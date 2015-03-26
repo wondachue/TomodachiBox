@@ -571,7 +571,7 @@ function addSPBtnOnClick(){
       console.log("adding to add...");
       btn.onclick = function(){
         var title = this.value;
-        addShowToBox(title,false);
+        addShowToBox(title,true);
       }
     }
 
@@ -594,7 +594,10 @@ function addSPBtnOnClick(){
         });
 
         storage.remove(title,function(result){
-          console.log("after removing, user shows: " + result.shows);
+          createTable("home");
+
+          //console.log("after removing, user shows: " + result.shows);
+          
         });
       }
     }
