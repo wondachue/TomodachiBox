@@ -441,13 +441,14 @@ function showPage(showname,result, showID){
   var img_show = document.createElement("img");
   img_show.className = "img-rounded";
   img_show.src = result.imageList[showID];
+  img_show.style.width = "100%";
   var row3 = document.createElement("div");
   row3.className = "row";
   var col3_1 = document.createElement("div");
   var col3_2 = document.createElement("div");
   col3_1.className =  "col-md-6";
   col3_2.className =  "col-md-6";
-  col3_1.innerHTML = "Release date : " + ongoing;
+  col3_1.innerHTML = "<small>" + ongoing + "</small><br><br>";
   col3_2.innerHTML = descrips;
 
   title_show.appendChild(title_text);
@@ -472,40 +473,6 @@ function showPage(showname,result, showID){
   show_table.appendChild(row3);
 
   space.appendChild(show_table);
-
-  //Show page content
-  /*
-    ($("<h3>").addClass("spTitle row").text(showname)).appendTo('#bg');
-
-  ($('<table>').attr("id","spTble")).appendTo('#bg');
-
-  var tbl = document.getElementById("spTble");
-  var row0 = tbl.insertRow(0);
-  var cell0a = row0.insertCell(0);
-  var cell0b = row0.insertCell(1);
-
-  row0.className = "row";
-  cell0a.innerHTML = ($('<div id="btn1">').addClass("spBtn").append(
-    $("<button id='spAdd'>").html('<span class="glyphicon glyphicon-plus" style="vertical-align:middle"> </span> to Box'))).html();
-  cell0b.innerHTML = ($('<div id="btn2">').addClass("spBtn").append(
-    $("<button id='spRemove'>").html('<span class="glyphicon glyphicon-minus" style="vertical-align:middle"> </span> from Box'))).html();
-  
-
-  var row1 = tbl.insertRow(1);
-  var cell1a = row1.insertCell(0);
-  var cell1b = row1.insertCell(1);
-
-  cell1a.innerHTML = ($("<div>").addClass("spImg").append(
-    $('<img>').addClass("spImgT").attr( 'src',result.imageList[showID]  ) ) ).html();
-  cell1b.innerHTML = (  $("<div>").addClass("spDesc").text(descrips) ).html();  
-
-  var row2 = tbl.insertRow(2);
-  var cell2a = row2.insertCell(0);
-  var cell2b = row2.insertCell(1);  
-
-  cell2a.innerHTML = (  $("<div>").addClass("spRelInfo").text("Release date : " + ongoing) ).html();
-  cell2b.innerHTML = (  $("<div>").addClass("spSocial").text("Social media connection aspects here?") ).html();
-  */
 
   descrips = "";
   ongoing = "";
@@ -586,13 +553,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     addToBox.addEventListener('click', function() {
 
-      /*
-                    var hiddenElement = document.createElement('a');
-              hiddenElement.href = 'data:attachment/text,' + encodeURI(images);
-              hiddenElement.target = '_blank';
-              hiddenElement.download = 'myFile.txt';
-              hiddenElement.click();
-              */
         chrome.browserAction.setIcon({path: 'icon.png'});
 
         var show = document.getElementById('shows').value;
