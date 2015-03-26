@@ -747,8 +747,8 @@ function showPage(showname,result, showID){
   show_table.appendChild(row3);
 
   space.appendChild(show_table, space);
-  loadCrunchy(showname.replace(/\s+/g, '-').toLowerCase(), space);
-  loadFun(showname.replace(/\s+/g, '-').toLowerCase(), space);
+  loadCrunchy(showname.replace(/\s+/g, '-').replace(/\//g, '').replace(/\./g, '').toLowerCase(), space);
+  loadFun(showname.replace(/\s+/g, '-').replace(/\//g, '').replace(/\./g, '').toLowerCase(), space);
 
   descrips = "";
   ongoing = "";
@@ -771,13 +771,18 @@ function loadFun(showname, space)
             var crunch_page = xmlhttp.responseText;
             var watchme = document.createElement("div");
             watchme.className = "row";
-            watchme.innerHTML = "<button class='crunch funButt btn btn-default btn-md' id='"+ showname + "'><span ></span>Watch on Funimation!</button>";
+            watchme.innerHTML = "<button class='btn btn-warning btn-md' id='"+ showname + "'><span ></span>Watch on Funimation!</button>";
             document.getElementById("chops").appendChild(watchme); 
-            $('#bg').scrollTop(0)
+            $('#bg').scrollTop(0);
             addLinkToWebsite();
       }
-      else{
-        $('#bg').scrollTop(0)
+      else if(xmlhttp.readyState==4 && xmlhttp.status==404){
+        var crunch_page = xmlhttp.responseText;
+        var watchme = document.createElement("div");
+        watchme.className = "row";
+        watchme.innerHTML = "<div class='btn btn-danger btn-sm' id='"+ showname + "'><span ></span>Not available on Funimation!</div>";
+        document.getElementById("chops").appendChild(watchme); 
+        $('#bg').scrollTop(0);
         console.log("no fun :(");
       }
       
@@ -800,13 +805,19 @@ function loadCrunchy(showname, space)
             var crunch_page = xmlhttp.responseText;
             var watchme = document.createElement("div");
             watchme.className = "row";
-            watchme.innerHTML = "<button class='crunch crunchButt btn btn-warning btn-md' id='"+ showname + "'><span ></span>Watch on Crunchyroll!</button>";
+            watchme.innerHTML = "<button class='crunch crunchButt btn btn-default btn-md' id='"+ showname + "'><span ></span>Watch on Crunchyroll!</button>";
             document.getElementById("chops").appendChild(watchme); 
-            $('#bg').scrollTop(0)
+            $('#bg').scrollTop(0);
             addLinkToWebsite();
       }
-      else{
-        $('#bg').scrollTop(0)
+      else if(xmlhttp.readyState==4 && xmlhttp.status==404){
+        $('#bg').scrollTop(0);
+        var crunch_page = xmlhttp.responseText;
+        var watchme = document.createElement("div");
+        watchme.className = "row";
+        watchme.innerHTML = "<div class='btn btn-danger btn-sm' id='"+ showname + "'><span ></span>Not available on Crunchroll!</div>";
+        document.getElementById("chops").appendChild(watchme); 
+        $('#bg').scrollTop(0);
         console.log("no crunchy :(");
       }
       
