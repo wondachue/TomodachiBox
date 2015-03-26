@@ -539,8 +539,8 @@ function createTable(page){
 							var cell0b = row0.insertCell(1);
 							row0.className = "row";
 							
-							cell0a.innerHTML = (month[date_check][h]);
-							cell0b.innerHTML = (date_check);
+							cell0a.innerHTML = (month[date_check][h]+"<br>");
+							cell0b.innerHTML = (date_check+"<br>");
 						 }
 					}
 				  }
