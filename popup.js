@@ -405,7 +405,7 @@ function createTable(page){
 
       //creating from stored user list
       if(result.shows == null || result.shows == undefined){
-        ($('#helper').text("Add shows to your list with the search bar above!"/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
+        ($('#helper').html("<b>Add shows to your TomodachiBox with the search bar above!</b><br>Clicking the rolls in your TomodachiBox will take you to show details."/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
           ));
         
       }
@@ -476,14 +476,14 @@ function createTable(page){
   }
   if(page == "help"){
     
-    ($('<h4>').text("Why are some boxes Red and some boxes Blue?")).appendTo('#bg');
-    ($('<p>').text("The boxes that are Red contain the shows specifically in your box. The boxes that you see as Blue are shows that your Facebook friends have liked if you connected to Facebook!")).appendTo('#bg');
+    ($('<h4>').text("Why are some boxes different colors? White, Blue, and Red?")).appendTo('#bg');
+    ($('<p>').text("TomodachiBox shows you three bentos! The bento with Red boxes is your personal bento (you add and remove titles from this one). If you are connected with Facebook, you may also see a bento with White boxes (titles you have liked on Facebook) and a bento with Blue boxes (titles your Facebook friends have liked).")).appendTo('#bg');
     
-    ($('<h4>').text("Why do some boxes only have a sushi in them?")).appendTo('#bg');
-    ($('<p>').text("This sushi is a placeholder for a show. Add more shows to your TomodachiBox to make it disappear!")).appendTo(bg);
+    ($('<h4>').text("Why do some boxes only have a sushi with a circle of roe in them?")).appendTo('#bg');
+    ($('<p>').text("This sushi roll is a placeholder for a title. Add more titless to your TomodachiBox to make it disappear!")).appendTo(bg);
     
     ($('<h4>').text("What do I do if something seems drastically wrong???")).appendTo('#bg');
-    ($('<p>').text("Please! We urge you to contact us (the development team) as soon as possible! We don't bite, and we would be happy to help you. :) ")).appendTo('#bg');
+    ($('<p>').text("Please! We urge you to contact us (the development team) as soon as possible! We don't bite, and we would be happy to help you get your TomodachiBox back in perfect, tasty shape as soon as possible. :) ")).appendTo('#bg');
     
     //($('<h4>').text()).appendTo(bg);
     //($('<p>').text()).appendTo(bg);
@@ -804,27 +804,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
    upcoming.addEventListener('click', function() {
-          console.log("The user wants to view upcoming page...");
-			getEpisodeDates();
-          document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page is Loading...</b>";
+          //console.log("The user wants to view upcoming page...");
+			    getEpisodeDates();
+          document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page is Loading...</b> <br><br><br>(This may take a few moments, depending on your internet connection. TomodachiBox apologizes for the trouble and greatly appreciates your patience! Gomen'nasai!)";
                   
     });
 
     toHome.addEventListener('click',function() {
-        console.log("The user wants to return to home page...");
+        //console.log("The user wants to return to home page...");
 
         createTable("home");
     });
 
     helpPls.addEventListener('click',function() {
-        console.log("The user wants to get help!...");
+        //console.log("The user wants to get help!...");
 
         createTable("help");
     }); 
 
+    /** ----May come in a later version!----
     fb_button.addEventListener('click',function() {
         postFB();
-    });   
+    });*/   
 
 });
 

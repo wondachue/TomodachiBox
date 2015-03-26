@@ -8,7 +8,7 @@ h4{
 }
 #bg{
   background-color: white;
-  width: 460px;
+  width: 470px;
   height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -51,6 +51,9 @@ h4{
   width: 75px;
   height: 75px;
   padding: 3px;
+}
+.toHome{
+  float: left;
 }
 .ui-autocomplete {
   max-height: 100px;
