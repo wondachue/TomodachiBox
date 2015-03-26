@@ -6,7 +6,9 @@ var today = new Date();
 //Handling of the show list
 var show_list = [];
 var images = [];
-var descrips = [];
+var descrips = "";
+var ongoing = "";
+var whereToWatch = [];
 
 var fb_shows_user = [];
 var fb_shows_friends = [];
@@ -64,12 +66,21 @@ function loadEpisodeData()
 					if(show_title != undefined && show_title.length != 0){
 						var show_arr = show_title.split("/");
 						var name = show_arr[3].replace(/_/g, ' ');
-						show_date[nameNum] = name;
+						name = name.replace(/%3A/g, ":");
+						name = name.replace(/%21/g, "!");
+						name = name.replace(/%E2%80%83/g, " ''");
+						//name = name.replace(/ /g, ":");
+						//name = name.replace(/ /g, "");
+						name = name.replace(/%28/g, "(");
+						name = name.replace(/%29/g, ")");
+						name = name.replace(/%40/g, "@");
+						//name = name.replace(/ /g, ":");
+						//name = name.replace(/ /g, "");
 						day.push(name);
-						console.log("the show title is: " + show_date[nameNum]);
-						nameNum++;
+						console.log("the show title is: " + name);
 					}
 				});
+				console.log("month is being popped.")
 				month[date] = day;
 			});
 			console.log("month is:");
@@ -84,9 +95,8 @@ function loadEpisodeData()
 				//
 			}); //maybe? as a start? im not sure
 
-			
-			createTable("upcoming");
 			*/
+			createTable("upcoming");
       }
       
     }
@@ -95,7 +105,7 @@ function loadEpisodeData()
 }
 
 function getEpisodeDates(){
-	for(var i = this_month; i <= i+1; i++){
+	for(var i = this_month; i <= this_month+1; i++){
     loadEpisodeData();
   }
 } 
@@ -153,7 +163,6 @@ function getShows(){
     else{
       getFileData("store.txt");
       getFileData("imageStore.txt");
-	  getEpisodeDates();
     }
   });
  
@@ -344,20 +353,28 @@ function createTable(page){
           showID = $.inArray(sharedShows[ss],result.showList);
         }
 
-        ($("<div>").addClass("boxF").append(
-          $("<div>").addClass("innerbox").append(
+        var bento = ($("<div>").addClass("bento titlelink").attr("id",sharedShows[ss]));
+        bento.html("<br><center><a class='titlelink' id = '" + sharedShows[ss] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss] + "'>" + sharedShows[ss] + "</a></center>");
+        bento.appendTo(cell1);
+        //var box = ($("<div>").addClass("boxF"));
+
+          ($("<div>").addClass("boxF").append(
+            $("<div>").addClass("innerbox").append(
             $("<div>").addClass("colRoll").append(
               $("<div>").addClass("roll").html(
-                  "<a class='titlelink' id = '" + sharedShows[ss] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss] + "'>" + 
-                  sharedShows[ss] + "</a><br><img src ='" + 
-                  result.imageList[showID] + "' class='img-circle sushi'></img>"))))).appendTo(cell1);
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
           
         if(sharedShows.length % 2 != 0 && ss == sharedShows.length-1){
-            ($("<div>").addClass("boxF").append(
-              $("<div>").addClass("innerbox").append(
-                $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").html("<img src ='" + 
-                    temp + "' class='img-circle sushi'>"))))).appendTo(cell2); 
+            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "45px" ));
+            bento2.appendTo(cell2);          
+
+          ($("<div>").addClass("boxF").append(
+            $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  temp + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
           }
           else{
 
@@ -365,13 +382,15 @@ function createTable(page){
           if(result.showList !=undefined){
             showID = $.inArray(sharedShows[ss+1],result.showList);
           }
+            var bento2 = ($("<div>").addClass("bento titlelink").attr("id",sharedShows[ss+1]));
+            bento2.html("<br><center><a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + sharedShows[ss+1] + "</a></center>");
+            bento2.appendTo(cell2);
             ($("<div>").addClass("boxF").append(
-              $("<div>").addClass("innerbox").append(
-                $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").html(
-                    "<a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + 
-                    sharedShows[ss+1] + "</a><br><img src ='" + 
-                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).appendTo(cell2);
+             $("<div>").addClass("innerbox").append(
+              $("<div>").addClass("colRoll").append(
+                $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
           }
       }
 
@@ -392,37 +411,49 @@ function createTable(page){
           if(result.showList != null || result.showList != undefined){
             var showID = $.inArray(result.shows[cell],result.showList);
           }
+        var bento = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell]));
+        bento.html("<br><center><a class='titlelink' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + result.shows[cell] + "</a></center>");
+        bento.appendTo(cell1);
+        //var box = ($("<div>").addClass("boxF"));
 
-          cell1.innerHTML = ($("<div>").addClass("boxU").append(
+          ($("<div>").addClass("boxU").append(
             $("<div>").addClass("innerbox").append(
-              $("<div>").addClass("colRoll").append(
-                $("<div>").addClass("roll").html(
-                    "<a class='titlelink' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + 
-                    result.shows[cell] + "</a><br><img src ='" + 
-                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).html();
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
           
           //leaving a trailing empty box if the num of user shows is odd, or filling it as needed~
           //--LEFT UNDONE-- putting the trailing box at the bottom?
+          
           if(size % 2 != 0 && cell == size-1){
-            cell2.innerHTML = ($("<div>").addClass("boxU").append(
-              $("<div>").addClass("innerbox").append(
-                $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").html("<img src ='" + 
-                    temp + "' class='img-circle sushi'>"))))).html(); 
+
+            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "45px" ));
+            bento2.appendTo(cell2);
+
+          ($("<div>").addClass("boxU").append(
+            $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  temp + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
           }
           else{
             var showID = -1;
             if(result.showList != null || result.showList !=undefined){
               showID = $.inArray(result.shows[cell+1],result.showList);
             }
+              var bento2 = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell+1]));
+              bento2.html("<br><center><a class='titlelink' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a></center>");
+              bento2.appendTo(cell2);
+              //var box = ($("<div>").addClass("boxF"));
 
-            cell2.innerHTML = ($("<div>").addClass("boxU").append(
-              $("<div>").addClass("innerbox").append(
-                $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").html(
-                    "<a class='titlelink' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + 
-                    result.shows[cell+1] + "</a><br><img src ='" + 
-                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).html();
+                ($("<div>").addClass("boxU").append(
+                  $("<div>").addClass("innerbox").append(
+                  $("<div>").addClass("colRoll").append(
+                    $("<div>").addClass("roll").html(
+                        "<br><br><img src ='" + 
+                        result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
           }
 
         }
@@ -451,8 +482,40 @@ function createTable(page){
     //($('<h4>').text()).appendTo(bg);
     //($('<p>').text()).appendTo(bg);
   }
-  else if(page == "upcoming"){
-    err.innerHTML = "";
+  if(page == "upcoming"){
+	  //get the date
+	  //translate to /year/month/day format
+	  //compare against dates in the month[] array
+	  //have the date and the showlist for the day be presented on the page.
+	  var new_date = new Date();
+	  var day_check = new_date.getDate();
+	  var month_check = new_date.getMonth()+1;
+	  var year_check = new_date.getFullYear();
+	
+	  
+	  var bg =  document.getElementById("bg");
+	  bg.innerHTML = "";
+	  ($('<table>').attr("id","cont")).appendTo('#bg');
+	  
+	  var tbl = document.getElementById("cont");
+	  console.log("month is: ");
+	  console.log(month);
+	  for(var d = day_check+2; d > day_check-1; d--){
+		  console.log("d is:" +d);
+		  var date_check = "/"+year_check+"/"+month_check+"/"+d;
+		  for(var i = 0; i < month[date_check].length; i++){
+					
+					var row0 = tbl.insertRow(0);
+					var cell0a = row0.insertCell(0);
+					var cell0b = row0.insertCell(1);
+					row0.className = "row";
+					
+					cell0a.innerHTML = (month[date_check][i]);
+					cell0b.innerHTML = (date_check);
+					//(month[date_check][i]).appendTo(cell0a);
+					//(date_check).appendTo(cell0b);
+		  }
+	  }
   }
   else{
     //console.log("something horrible happened to get here @_@");
@@ -469,59 +532,87 @@ function addLinkOnClick(showArray){
     }
   }
 }
-
-function makeShowPage(showname){
-
-  storage.get( function(result){
-  var showID = -1;
-  if(result.showList != null || result.showList != undefined){
-    showID = $.inArray(showname,result.showList);
-  }
+function showPage(showname,result, showID){
 
   var space = document.getElementById("bg");
   space.innerHTML = "";
-
-  ($("<h3>").addClass("spTitle").text("Anime Title: " + showname)).appendTo('#bg');
-  
-  //Show page content
-  ($('<table>').attr("id","spTble")).appendTo('#bg');
-
-  var tbl = document.getElementById("spTble");
-  var row0 = tbl.insertRow(0);
-  var cell0a = row0.insertCell(0);
-  var cell0b = row0.insertCell(1);
-
-  cell0a.innerHTML = ($('<div id="btn1">').addClass("spBtn").append(
-    $("<button id='spAdd'>").html('<span class="glyphicon glyphicon-plus" style="vertical-align:middle"> </span> to Box'))).html();
-  cell0b.innerHTML = ($('<div id="btn2">').addClass("spBtn").append(
-    $("<button id='spRemove'>").html('<span class="glyphicon glyphicon-minus" style="vertical-align:middle"> </span> from Box'))).html();
+  var title_show = document.createElement("div");
+  title_show.className = "row page-header";
+  var title_text = document.createElement("div");
+  title_text.className = "col-md-8";
+  title_text.innerHTML = "<h2>" + showname + "</h2>";
   
 
-  var row1 = tbl.insertRow(1);
-  var cell1a = row1.insertCell(0);
-  var cell1b = row1.insertCell(1);
+  var show_table = document.createElement("div");
+  show_table.className = "container";
+  var row1 = document.createElement("div");
+  row1.className = "row";
+  var col1 = document.createElement("div");
+  var col2 = document.createElement("div");
+  var button1 =  document.createElement("button");
+  var button2 = document.createElement("button");
+  button1.id = "spAdd";
+  button2.id = "spRemove";
+  button1.className = "spBtn btn btn-default btn-lg";
+  button2.className = "spBtn btn btn-default btn-lg";
+  button1.innerHTML = "<div><span class='glyphicon glyphicon-plus' style='vertical-align:middle'> </span> to Bento</div>";
+  button2.innerHTML = "<div><span class='glyphicon glyphicon-minus' style='vertical-align:middle'> </span> from Bento</div>";
+  button1.style.display = "block"; 
+  button1.style.width = "100%";
+  button2.style.display = "block";
+  button2.style.width = "100%";
 
-  cell1a.innerHTML = ($("<div>").addClass("spImg").append(
-    $('<img>').addClass("spImgT").attr('src',result.imageList[showID]))).html();
-  cell1b.innerHTML = ($("<div>").addClass("spDesc").text("descripList should populate here")).html();  
+  var row2 = document.createElement("div");
+  row2.className = "row";
+  var col2_1 = document.createElement("div");
+  col2_1.className = "col-lg-12 boxU";
+  var divRoll = document.createElement("div");
+  divRoll.className = "colRoll";
+  var divBox = document.createElement("div");
+  divBox.className = "innerbox";
+  var img_show = document.createElement("img");
+  img_show.className = "roll img-circle";
+  img_show.src = result.imageList[showID];
+  //img_show.style.width = "100%";
+  var row3 = document.createElement("div");
+  row3.className = "row";
+  var col3_1 = document.createElement("div");
+  var col3_2 = document.createElement("div");
+  col3_1.className =  "col-md-6";
+  col3_2.className =  "col-md-6";
+  col3_1.innerHTML = "<small>" + ongoing + "</small><br><br>";
+  col3_2.innerHTML = descrips;
 
-  var row2 = tbl.insertRow(2);
-  var cell2a = row2.insertCell(0);
-  var cell2b = row2.insertCell(1);  
+  title_show.appendChild(title_text);
+  var col1_1 = document.createElement("div");
+  col1_1.className = "col-md-4";
+  col1.appendChild(button1);
+  col2.appendChild(button2);
+  col1_1.appendChild(col1);
+  col1_1.appendChild(col2);
+  col1_1.style.cssFloat = "right";
 
-  cell2a.innerHTML = ($("<div>").addClass("spRelInfo").text("Release date info here")).html();
-  cell2b.innerHTML = ($("<div>").addClass("spSocial").text("Social media connection aspects here?")).html();
+  title_text.style.cssFloat = "left";
+  title_show.appendChild(col1_1);
+  divRoll.appendChild(img_show);
+  divBox.appendChild(divRoll);
+  col2_1.appendChild(divBox);
+  row2.appendChild(col2_1);
+  row3.appendChild(col3_1);
+  row3.appendChild(col3_2);
 
-  });
+  space.appendChild(title_show);
+  show_table.appendChild(row1);
+  show_table.appendChild(row2);
+  show_table.appendChild(row3);
+
+  space.appendChild(show_table);
+
+  descrips = "";
+  ongoing = "";
+  whereToWatch = [];
 }
-
-function getAllAnimeYears(){
-  reloadTwitterButton("Hamtaro");
-  getShows();
-  createTable("home"); 
-}
-
-function loadShowData(this_num)
+function loadShowData(showname,result, showID)
 {
     var xmlhttp;
     if (window.XMLHttpRequest)
@@ -534,15 +625,60 @@ function loadShowData(this_num)
       {
             var wiki_page = xmlhttp.responseText;
             var wiki_infobox = $(".infobox", wiki_page);
-            images[this_num] = "http:" + $("img", wiki_infobox).attr('src');
             var wiki_descrip = $("#mw-content-text", wiki_page);
-            descrips[this_num] = $("p", wiki_descrip).first();         
+            var descrips1 = $("h2",wiki_descrip).filter(":contains('Plot')").next();
+            var descrips2 = $("h2",wiki_descrip).filter(":contains('Plot')").next("p").text();
+            var count = 0;
+            if(descrips2 && descrips2.length > 0){
+              descrips = descrips2;
+            }
+            else{
+              while(true){
+                console.log(count);
+                if(descrips1.next("p").text() && descrips1.next("p").text().length > 0){
+                  descrips = descrips1.next("p").text();
+                  break;
+                }
+                if(count > 6){
+                  descrips = $("p:first", wiki_descrip).text();
+                  break;
+                }
+                descrips1 = descrips1.next();
+                count++;
+              }
+            }
+
+
+            
+            var anime_info = $("tr",wiki_infobox).filter(":contains('Anime television series')").nextUntil().filter(":contains('Original run')").text();
+            //var show_info_date = $("tr",anime_info).filter(":contains('Original run')");
+            ongoing = anime_info;
+            console.log(anime_info);
+            whereToWatch = [];   
+            showPage(showname,result, showID);   
       }
       
     }
-    xmlhttp.open("GET","http://en.wikipedia.org/wiki/" + show_list[this_num],true);
+    xmlhttp.open("GET","http://en.wikipedia.org/wiki/" + showname,true);
     xmlhttp.send();
 }
+function makeShowPage(showname){
+
+  storage.get( function(result){
+    var showID = -1;
+    if(result.showList != null || result.showList != undefined){
+      showID = $.inArray(showname,result.showList);
+    }
+    loadShowData(showname,result, showID);
+  });
+}
+
+function getAllAnimeYears(){
+  reloadTwitterButton("Hamtaro");
+  getShows();
+  createTable("home"); 
+}
+
 
 function reloadTwitterButton(show){
 
@@ -575,14 +711,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     addToBox.addEventListener('click', function() {
 
-      /*
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:attachment/text,' + encodeURI(images);
-        hiddenElement.target = '_blank';
-        hiddenElement.download = 'myFile.txt';
-        hiddenElement.click();
-        */
-
         chrome.browserAction.setIcon({path: 'icon.png'});
 
         var show = document.getElementById('shows').value;
@@ -601,8 +729,9 @@ document.addEventListener('DOMContentLoaded', function() {
     upcoming.addEventListener('click', function() {
           console.log("The user wants to view upcoming page...");
 
-          createTable("upcoming");
-          //document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
+    			getEpisodeDates();
+          document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
+
                   
     });
 
