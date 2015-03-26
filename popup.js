@@ -492,9 +492,30 @@ function loadShowData(showname,result, showID)
             var wiki_page = xmlhttp.responseText;
             var wiki_infobox = $(".infobox", wiki_page);
             var wiki_descrip = $("#mw-content-text", wiki_page);
-            //descrips = $("p:first", wiki_descrip).text();
+            var descrips1 = $("h2",wiki_descrip).filter(":contains('Plot')").next();
+            var descrips2 = $("h2",wiki_descrip).filter(":contains('Plot')").next("p").text();
+            var count = 0;
+            if(descrips2 && descrips2.length > 0){
+              descrips = descrips2;
+            }
+            else{
+              while(true){
+                console.log(count);
+                if(descrips1.next("p").text() && descrips1.next("p").text().length > 0){
+                  descrips = descrips1.next("p").text();
+                  break;
+                }
+                if(count > 6){
+                  descrips = $("p:first", wiki_descrip).text();
+                  break;
+                }
+                descrips1 = descrips1.next();
+                count++;
+              }
+            }
+
+
             
-            descrips = $("h2",wiki_descrip).filter(":contains('Plot')").next().text();
             var anime_info = $("tr",wiki_infobox).filter(":contains('Anime television series')").nextUntil().filter(":contains('Original run')").text();
             //var show_info_date = $("tr",anime_info).filter(":contains('Original run')");
             ongoing = anime_info;
