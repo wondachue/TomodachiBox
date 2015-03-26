@@ -538,6 +538,46 @@ function addLinkOnClick(showArray){
     }
   }
 }
+
+function addSPBtnOnClick(){
+  var btns = $('.spBtn');
+  for(var i = 0; i < btns.length; i++){
+    var btn = btns[i];
+    if(btn.id == "spAdd"){
+      console.log("adding to add...");
+      btn.onclick = function(){
+        var title = this.value;
+        addShowToBox(title,false);
+      }
+    }
+
+    if(btn.id == "spRemove"){
+      console.log("adding to remove...");
+      btn.onclick = function(){
+        var title = this.value;
+
+        storage.get(function(result){
+
+          var newA = [];
+          var count = 0;
+          for(var i = 0; i < result.shows.length; i++){
+            if(title != result.shows[i]){
+              newA[count] = result.shows[i];
+              count++;
+            }
+          }
+          storage.set({"shows" : newA})
+        });
+
+        storage.remove(title,function(result){
+          console.log("after removing, user shows: " + result.shows);
+        });
+      }
+    }
+
+  }
+}
+
 function showPage(showname,result, showID){
 
   var space = document.getElementById("bg");
@@ -561,6 +601,8 @@ function showPage(showname,result, showID){
   button2.id = "spRemove";
   button1.className = "spBtn btn btn-default btn-lg";
   button2.className = "spBtn btn btn-default btn-lg";
+  button1.value = showname;
+  button2.value = showname;
   button1.innerHTML = "<div><span class='glyphicon glyphicon-plus' style='vertical-align:middle'> </span> to Bento</div>";
   button2.innerHTML = "<div><span class='glyphicon glyphicon-minus' style='vertical-align:middle'> </span> from Bento</div>";
   button1.style.display = "block"; 
@@ -617,6 +659,8 @@ function showPage(showname,result, showID){
   descrips = "";
   ongoing = "";
   whereToWatch = [];
+
+  addSPBtnOnClick();
 }
 function loadShowData(showname,result, showID)
 {
