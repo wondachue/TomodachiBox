@@ -34,8 +34,9 @@ h4{
 }
 .upcomingTitle{
   text-decoration: underline;
+  cursor: pointer;
 }
-.upcomingTitle{
+.upcomingTitle:hover{
   color: pink;
 }
 .titlelink{
