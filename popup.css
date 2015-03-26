@@ -1,4 +1,8 @@
 /*Basic Styling*/
+@font-face {
+    font-family: myFirstFont;
+    src: url(last.ttf);
+}
 h4{
   font-weight: bold;
 }
@@ -15,8 +19,21 @@ h4{
 .rollIcon{
   background-image: url("roll.gif");
 }
-.titlelink{
+.texterf{
   color: white;
+  font-family: myFirstFont;
+  font-size: 1.5em;
+  display:inline-block;
+  width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.texterf:hover{
+  color: pink;
+}
+.titlelink{
+  width: 230px;
 }
 .sushi{
   width: 75px;

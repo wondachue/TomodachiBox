@@ -296,7 +296,7 @@ function createTable(page){
         }
 
         var bento = ($("<div>").addClass("bento titlelink").attr("id",sharedShows[ss]));
-        bento.html("<br><center><a class='titlelink' id = '" + sharedShows[ss] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss] + "'>" + sharedShows[ss] + "</a></center>");
+        bento.html("<br><center><a class='texterf' id = '" + sharedShows[ss] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss] + "'>" + sharedShows[ss] + "</a></center>");
         bento.appendTo(cell1);
         //var box = ($("<div>").addClass("boxF"));
 
@@ -308,7 +308,7 @@ function createTable(page){
                   result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
           
         if(sharedShows.length % 2 != 0 && ss == sharedShows.length-1){
-            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "45px" ));
+            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "60px" ));
             bento2.appendTo(cell2);          
 
           ($("<div>").addClass("boxF").append(
@@ -325,7 +325,7 @@ function createTable(page){
             showID = $.inArray(sharedShows[ss+1],result.showList);
           }
             var bento2 = ($("<div>").addClass("bento titlelink").attr("id",sharedShows[ss+1]));
-            bento2.html("<br><center><a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + sharedShows[ss+1] + "</a></center>");
+            bento2.html("<br><center><a class='texterf' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + sharedShows[ss+1] + "</a></center>");
             bento2.appendTo(cell2);
             ($("<div>").addClass("boxF").append(
              $("<div>").addClass("innerboxF").append(
@@ -361,7 +361,7 @@ function createTable(page){
         }
 
         var bento = ($("<div>").addClass("bento titlelink").attr("id",userFBShows[ss]));
-        bento.html("<br><center><a class='titlelink' id = '" + userFBShows[ss] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss] + "'>" + userFBShows[ss] + "</a></center>");
+        bento.html("<br><center><a class='texterf' id = '" + userFBShows[ss] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss] + "'>" + userFBShows[ss] + "</a></center>");
         bento.appendTo(cell1);
         //var box = ($("<div>").addClass("boxF"));
 
@@ -373,7 +373,7 @@ function createTable(page){
                   result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
           
         if(userFBShows.length % 2 != 0 && ss == userFBShows.length-1){
-            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "45px" ));
+            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "60px" ));
             bento2.appendTo(cell2);          
 
           ($("<div>").addClass("boxUF").append(
@@ -390,7 +390,7 @@ function createTable(page){
             showID = $.inArray(userFBShows[ss+1],result.showList);
           }
             var bento2 = ($("<div>").addClass("bento titlelink").attr("id",userFBShows[ss+1]));
-            bento2.html("<br><center><a class='titlelink' id = '" + userFBShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss+1] + "'>" + userFBShows[ss+1] + "</a></center>");
+            bento2.html("<br><center><a class='texterf' id = '" + userFBShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss+1] + "'>" + userFBShows[ss+1] + "</a></center>");
             bento2.appendTo(cell2);
 
             ($("<div>").addClass("boxUF").append(
@@ -423,7 +423,7 @@ function createTable(page){
             var showID = $.inArray(result.shows[cell],result.showList);
           }
         var bento = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell]));
-        bento.html("<br><center><a class='titlelink' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + result.shows[cell] + "</a></center>");
+        bento.html("<br><center><a class='texterf' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + result.shows[cell] + "</a></center>");
         bento.appendTo(cell1);
         //var box = ($("<div>").addClass("boxF"));
 
@@ -439,7 +439,7 @@ function createTable(page){
           
           if(size % 2 != 0 && cell == size-1){
 
-            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "45px" ));
+            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "60px" ));
             bento2.appendTo(cell2);
 
           ($("<div>").addClass("boxU").append(
@@ -455,7 +455,7 @@ function createTable(page){
               showID = $.inArray(result.shows[cell+1],result.showList);
             }
               var bento2 = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell+1]));
-              bento2.html("<br><center><a class='titlelink' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a></center>");
+              bento2.html("<br><center><a class='texterf' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a></center>");
               bento2.appendTo(cell2);
               //var box = ($("<div>").addClass("boxF"));
 
