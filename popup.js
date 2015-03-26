@@ -366,7 +366,7 @@ function createTable(page){
         //var box = ($("<div>").addClass("boxF"));
 
           ($("<div>").addClass("boxUF").append(
-            $("<div>").addClass("innerboxF").append(
+            $("<div>").addClass("innerboxF2").append(
             $("<div>").addClass("colRoll").append(
               $("<div>").addClass("roll").html(
                   "<br><br><img src ='" + 
@@ -377,7 +377,7 @@ function createTable(page){
             bento2.appendTo(cell2);          
 
           ($("<div>").addClass("boxUF").append(
-            $("<div>").addClass("innerboxF").append(
+            $("<div>").addClass("innerboxF2").append(
             $("<div>").addClass("colRoll").append(
               $("<div>").addClass("roll").html(
                   "<br><br><img src ='" + 
@@ -394,7 +394,7 @@ function createTable(page){
             bento2.appendTo(cell2);
 
             ($("<div>").addClass("boxUF").append(
-             $("<div>").addClass("innerboxF").append(
+             $("<div>").addClass("innerboxF2").append(
               $("<div>").addClass("colRoll").append(
                 $("<div>").addClass("roll").html(
                   "<br><br><img src ='" + 

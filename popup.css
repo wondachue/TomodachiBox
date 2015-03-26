@@ -88,7 +88,7 @@ h4{
 .boxUF{
   background: -webkit-linear-gradient(70deg, black, white, #f2f0ee);
   border: 3px solid black;
-  box-shadow: inset 0px 0px 12px red;       
+  box-shadow: inset 0px 0px 12px white;       
 }
 .boxF{
   background: -webkit-linear-gradient(70deg, black, blue, #f2f0ee);
@@ -105,6 +105,12 @@ h4{
 .innerboxF{
   background: -webkit-linear-gradient(#000066, black);
   border: 10px solid #000066;
+  margin: 7px;
+  padding: 2px;
+}
+.innerboxF2{
+  background: -webkit-linear-gradient(#f2f0ee, black);
+  border: 10px solid black;
   margin: 7px;
   padding: 2px;
 }
