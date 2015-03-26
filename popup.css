@@ -32,6 +32,12 @@ h4{
 .texterf:hover{
   color: pink;
 }
+.upcomingTitle{
+  text-decoration: underline;
+}
+.upcomingTitle{
+  color: pink;
+}
 .titlelink{
   width: 230px;
 }

@@ -53,7 +53,7 @@ function loadEpisodeData()
 				var h2_thing = $("h2", first_tr);
 				var date = $("a", h2_thing).attr("href");
 				if(date != undefined && date.length != 0){
-				console.log("the date is: " + date);
+				//console.log("the date is: " + date);
 				}
 				
 				var tbody_data = $("tbody:first", this);
@@ -77,14 +77,14 @@ function loadEpisodeData()
 						name = name.replace(/%E2%88%9A/g, "");
 						name = name.replace(/%C3%97/g, "x");
 						day.push(name);
-						console.log("the show title is: " + name);
+						//console.log("the show title is: " + name);
 					}
 				});
-				console.log("month is being popped.")
+				//console.log("month is being popped.")
 				month[date] = day;
 			});
-			console.log("month is:");
-			console.log(month);
+			//console.log("month is:");
+			//console.log(month);
 		//console.log("the show title is: " + show_date);
 			/*
 			$("thead",date_table)(function(){
@@ -126,7 +126,7 @@ function getFileData(thisFile){
                   storage.set(
                     {"showList" : show_list},
                     function(result){
-                      console.log(result);
+                      //console.log(result);
                       $( "#shows" ).autocomplete({
                         source: show_list
                       });
@@ -138,7 +138,7 @@ function getFileData(thisFile){
                   storage.set(
                     {"imageList" : images},
                     function(result){
-                      console.log(result);
+                      //console.log(result);
                     }
                   );
                 }
@@ -177,7 +177,7 @@ $(document).ready(function() {
           var eventer = window[eventMethod];
           var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
           eventer(messageEvent,function(e) {
-            console.log("Connection status: "+e.data.connectStatus+"; UserID: "+e.data.userID+"; AccessToken: "+e.data.accessToken);
+            //console.log("Connection status: "+e.data.connectStatus+"; UserID: "+e.data.userID+"; AccessToken: "+e.data.accessToken);
           });
        }
   }).appendTo('#facebook_handler');
@@ -215,11 +215,11 @@ function getFBInfo(){
             var data_fb = JSON.parse( fbjson );
             //console.log(fbjson);
             for(thing in data_fb.friends){
-              console.log(thing);
+              //console.log(thing);
               if(thing === "data"){
                 for(num in data_fb.friends.data){
                   for(thing2 in data_fb.friends.data[num].television){
-                    console.log(thing2);
+                    //console.log(thing2);
                     if(thing2 === "data"){
                       for(show in data_fb.friends.data[num].television.data){
                           fb_shows_friends.push(data_fb.friends.data[num].television.data[show].name); 
@@ -244,7 +244,7 @@ function listener(event){
   fb_connectStatus = event.data.connectStatus;
   fb_accessToken = event.data.accessToken;
   fb_userID = event.data.userID;
-  console.log("connect: " + event.data.connectStatus + " accessToken:" + event.data.accessToken + " userID: " + event.data.userID);
+  //console.log("connect: " + event.data.connectStatus + " accessToken:" + event.data.accessToken + " userID: " + event.data.userID);
   if(event.data.connectStatus == "connected"){
     getFBInfo();
   }
@@ -515,8 +515,8 @@ function createTable(page){
 		  var tbl = document.getElementById("cont");
 
 		  //tbl.className= "board";
-		  console.log("month is: ");
-		  console.log(month);
+		  //console.log("month is: ");
+		  //console.log(month);
 		  
 		  for(var d = day_check+2; d > day_check-1; d--){
 			  console.log("d is:" +d);
@@ -529,36 +529,47 @@ function createTable(page){
 						cell0b.style.width = "50px";
 						row0.className = "row";
 						var date_thing = month_check+"."+d;
-						cell0a.innerHTML = (month[date_check][i]+"<br>");
+					if($.inArray(month[date_check][i],result.showList) != -1){
+          	cell0a.innerHTML = ("<span class='upcomingTitle' id='" + month[date_check][i] + "'>" + month[date_check][i] + "</span><br>");
 						cell0b.innerHTML = (date_thing+"<span class='glyphicon glyphicon-yen' style='vertical-align:middle'> </span> ");
 						//(month[date_check][i]).appendTo(cell0a);
 						//(date_check).appendTo(cell0b);
-					 
+          }
+          else{
+            cell0a.innerHTML = (month[date_check][i] + "<br>");
+            cell0b.innerHTML = (date_thing+"<span class='glyphicon glyphicon-yen' style='vertical-align:middle'> </span> ");
+          }
+				}
 						
-			  }
+			}
 			  
-		  }
 		  for(var b = day_check+2; b > day_check-1; b--){
-			  console.log("d is:" +b);
+			  //console.log("d is:" +b);
 			  var date_check = "/"+year_check+"/"+month_check+"/"+b;
 			  for(var h = 0; h < month[date_check].length; h++){
-				  console.log("just checking shows size" + month[date_check][h]);
+				  //console.log("just checking shows size" + month[date_check][h]);
 					for(var j = 0; j < result.shows.length; j++){
 						 if(result.shows[j] == month[date_check][h]){
-							 console.log("found show: " + result.shows[j]);
+							//console.log("found show: " + result.shows[j]);
 							var row0 = tbl.insertRow(0);
 							var cell0a = row0.insertCell(0);
 							var cell0b = row0.insertCell(1);
 							cell0b.style.width = "50px";
 							row0.className = "row";
-							var date_thing = month_check+"."+d;
-							cell0a.innerHTML = ("<span class='glyphicon glyphicon-star' style='vertical-align:middle'> </span> " + month[date_check][h]+"<br>");
-							cell0b.innerHTML = ( date_thing+"<span class='glyphicon glyphicon-yen' style='vertical-align:middle'> </span> ");
-						 }
+							var date_thing = month_check+"."+b;
+               if($.inArray(month[date_check][h],result.showList) != -1){
+  							cell0a.innerHTML = ("<span class='upcomingTitle' id='" + month[date_check][h] + "'> <span class='glyphicon glyphicon-star' style='vertical-align:middle'> </span>" + month[date_check][h] + "</span><br>");
+  	 						cell0b.innerHTML = ( date_thing+"<span class='glyphicon glyphicon-yen' style='vertical-align:middle'> </span> ");
+  	   				 }
+               else{
+                cell0a.innerHTML = ("<span class='glyphicon glyphicon-star' style='vertical-align:middle'> </span> " + month[date_check][h]+"<br>");
+                cell0b.innerHTML = ( date_thing+"<span class='glyphicon glyphicon-yen' style='vertical-align:middle'> </span> ");
+               }
+             }
 					}
 				  }
 		  }
-		  
+		  addLinkToUpcomings();
 		  
 	  });
   }
@@ -578,25 +589,22 @@ function addLinkOnClick(showArray){
   }
 }
  
+function addLinkToUpcomings(){
+  var links = $('.upcomingTitle');
+  for(var i = 0; i < links.length; i++){
+    var link = links[i];
+    link.onclick = function(){
+       makeShowPage(this.id);
+    }
+  }
+}
+
 function addLinkToWebsite(){
- // classthing = document.getElementBy("crunch");
   var webs = $('.crunch');
   for(var i = 0; i < webs.length; i++){
   var web = webs[i];
-  //idpls = classthing.value;
-  //for(elem in idpls){
-    //console.log("elem is: " + elem + " : " + idpls[elem]);
-  //}
-  //for(var i = 0; i < webs.length; i++){
-    //var web = webs[i];
-    web.onclick = function(){
-
-
-    //classthing.onclick = function(){
-       //Do something with chrome Tabs
-       //To get the id you stored, the show name
-       //just use: this.id
-      var urlNew = "http://www.crunchyroll.com/" + this.id;
+  web.onclick = function(){
+    var urlNew = "http://www.crunchyroll.com/" + this.id;
       console.log("Attempting to open a tab for " + this.id);
       chrome.tabs.create({url : urlNew});
 
