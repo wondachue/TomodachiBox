@@ -889,10 +889,10 @@ function reloadTwitterButton(show){
   var link = document.createElement('a');
   link.setAttribute('href', 'https://twitter.com/int?screen_name=');
   link.setAttribute('class', 'twitter-mention-button');
-  link.setAttribute("data-text" , "Hey there tomodachi, " + show + " is airing on: " );
+  link.setAttribute("data-text" , "Hey there tomodachi, watch anime with me! #tomodachibox" );
   link.setAttribute("data-size" ,"large");
   //link.setAttribute("data-via" ,"tomodachibox") ;
-  link.setAttribute("data-url" ,"http://en.wikipedia.org/wiki/" + show);
+  //link.setAttribute("data-url" ,"http://en.wikipedia.org/wiki/" + show);
   document.getElementById("twitterContainer").appendChild(link) ;
   $.getScript('https://platform.twitter.com/widgets.js', function(){
     twttr.widgets.load();
