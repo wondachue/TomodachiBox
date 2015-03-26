@@ -589,6 +589,7 @@ function addLinkToWebsite(){
   //}
   //for(var i = 0; i < webs.length; i++){
     //var web = webs[i];
+
     web.onclick = function(){
 
 
@@ -685,9 +686,9 @@ function showPage(showname,result, showID){
   var divRoll = document.createElement("div");
   divRoll.className = "colRoll";
   var chop = document.createElement("div");
-  chop.className = "chops";
+  chop.id = "chops";
   var divBox = document.createElement("div");
-  divBox.className = "innerbox";
+  divBox.className = "innerbox2";
   var img_show = document.createElement("img");
   img_show.className = "roll img-circle";
   img_show.src = result.imageList[showID];
@@ -726,7 +727,7 @@ function showPage(showname,result, showID){
   show_table.appendChild(row3);
 
   space.appendChild(show_table, space);
-  loadCrunchy(showname, space);
+  loadCrunchy(showname.replace(/\s+/g, '-').toLowerCase(), space);
   descrips = "";
   ongoing = "";
   whereToWatch = [];
@@ -735,6 +736,7 @@ function showPage(showname,result, showID){
 }
 function loadCrunchy(showname, space)
 {
+    console.log(showname);
     var xmlhttp;
     if (window.XMLHttpRequest)
     {
@@ -747,11 +749,13 @@ function loadCrunchy(showname, space)
             var crunch_page = xmlhttp.responseText;
             var watchme = document.createElement("div");
             watchme.className = "row";
-            watchme.innerHTML = "<button class='crunch btn btn-warning btn-lg' id='"+ showname + "'><span ></span>Watch me on crunchyroll!</button>";
-            space.appendChild(watchme); 
+            watchme.innerHTML = "<button class='crunch btn btn-warning btn-md' id='"+ showname + "'><span ></span>Watch on Crunchyroll!</button>";
+            document.getElementById("chops").appendChild(watchme); 
+            $('#bg').scrollTop(0)
             addLinkToWebsite();
       }
       else if(xmlhttp.status==404){
+        $('#bg').scrollTop(0)
         console.log("no crunchy :(");
       }
       
