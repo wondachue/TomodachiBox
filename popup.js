@@ -102,7 +102,7 @@ function loadEpisodeData()
 }
 
 function getEpisodeDates(){
-	for(var i = this_month; i <= i+1; i++){
+	for(var i = this_month; i <= this_month+1; i++){
     loadEpisodeData();
   }
 } 
