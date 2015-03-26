@@ -67,14 +67,15 @@ function loadEpisodeData()
 						var name = show_arr[3].replace(/_/g, ' ');
 						name = name.replace(/%3A/g, ":");
 						name = name.replace(/%21/g, "!");
-						name = name.replace(/%E2%80%83/g, " ''");
-						//name = name.replace(/ /g, ":");
-						//name = name.replace(/ /g, "");
+						name = name.replace(/%E2%80%B3/g, " ''");
+						name = name.replace(/%C5%AB/g, "u");
+						name = name.replace(/%C5%8D/g, "o");
 						name = name.replace(/%28/g, "(");
 						name = name.replace(/%29/g, ")");
 						name = name.replace(/%40/g, "@");
-						//name = name.replace(/ /g, ":");
-						//name = name.replace(/ /g, "");
+						name = name.replace(/%C3%A9/g, "&eacute");
+						name = name.replace(/%E2%88%9A/g, "");
+						name = name.replace(/%C3%97/g, "x");
 						day.push(name);
 						console.log("the show title is: " + name);
 					}
@@ -502,11 +503,21 @@ function createTable(page){
 		  
 		  var bg =  document.getElementById("bg");
 		  bg.innerHTML = "";
-		  ($('<table>').attr("id","cont")).appendTo('#bg');
-		  
+		  //
+		  var tbDiv = document.createElement("div");
+		  tbDiv.className = "board";
+		  tbDiv.id = "thisBG";
+		  var head = document.createElement("h3");
+		  head.innerHTML = "<center>Menu: UPCOMING SPECIALS</center>";
+		  tbDiv.appendChild(head);
+			bg.appendChild(tbDiv);
+		  ($('<table>').attr("id","cont")).appendTo('#thisBG');
 		  var tbl = document.getElementById("cont");
+
+		  //tbl.className= "board";
 		  console.log("month is: ");
 		  console.log(month);
+		  
 		  for(var d = day_check+2; d > day_check-1; d--){
 			  console.log("d is:" +d);
 			  var date_check = "/"+year_check+"/"+month_check+"/"+d;
@@ -515,10 +526,11 @@ function createTable(page){
 						var row0 = tbl.insertRow(0);
 						var cell0a = row0.insertCell(0);
 						var cell0b = row0.insertCell(1);
+						cell0b.style.width = "50px";
 						row0.className = "row";
-						
-						cell0a.innerHTML = (month[date_check][i]);
-						cell0b.innerHTML = (date_check);
+						var date_thing = month_check+"."+d;
+						cell0a.innerHTML = (month[date_check][i]+"<br>");
+						cell0b.innerHTML = (date_thing+"<span class='glyphicon glyphicon-yen' style='vertical-align:middle'> </span> ");
 						//(month[date_check][i]).appendTo(cell0a);
 						//(date_check).appendTo(cell0b);
 					 
@@ -537,14 +549,17 @@ function createTable(page){
 							var row0 = tbl.insertRow(0);
 							var cell0a = row0.insertCell(0);
 							var cell0b = row0.insertCell(1);
+							cell0b.style.width = "50px";
 							row0.className = "row";
-							
-							cell0a.innerHTML = (month[date_check][h]+"<br>");
-							cell0b.innerHTML = (date_check+"<br>");
+							var date_thing = month_check+"."+d;
+							cell0a.innerHTML = ("<span class='glyphicon glyphicon-star' style='vertical-align:middle'> </span> " + month[date_check][h]+"<br>");
+							cell0b.innerHTML = ( date_thing+"<span class='glyphicon glyphicon-yen' style='vertical-align:middle'> </span> ");
 						 }
 					}
 				  }
 		  }
+		  
+		  
 	  });
   }
   else{
