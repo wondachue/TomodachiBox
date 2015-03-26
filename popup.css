@@ -8,7 +8,7 @@ h4{
 }
 #bg{
   background-color: white;
-  width: 460px;
+  width: 470px;
   height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -51,6 +51,9 @@ h4{
   width: 75px;
   height: 75px;
   padding: 3px;
+}
+.toHome{
+  float: left;
 }
 .ui-autocomplete {
   max-height: 100px;
@@ -190,8 +193,14 @@ h4{
 }
 
 /*Upcoming Page Styling*/
-
-
+.board{
+background-image: url("chalkboard-black2.jpg");
+color: white;
+margin: 5px;
+padding: 25px;
+font-family: myFirstFont;
+font-size: 1.5em;
+}
 /*Facebook Style tags*/
 #facebook_load_frame {
  width:1px;
