@@ -68,6 +68,11 @@ h4{
   border: 3px solid black;
   box-shadow: inset 0px 0px 12px red;       
 }
+.boxUF{
+  background: -webkit-linear-gradient(70deg, black, white, #f2f0ee);
+  border: 3px solid black;
+  box-shadow: inset 0px 0px 12px red;       
+}
 .boxF{
   background: -webkit-linear-gradient(70deg, black, blue, #f2f0ee);
   border: 3px solid black;

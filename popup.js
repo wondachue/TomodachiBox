@@ -15,6 +15,8 @@ var fb_shows_friends = [];
 //For storage and user show list
 var storage = chrome.storage.local;
 var usershows = [];
+
+var userFBShows = [];
 var sharedShows = [];
 
 //Storage for the episode dates
@@ -269,6 +271,7 @@ function createTable(page){
 
     storage.get(function(result){ 
       
+      //creating friend shows
       for(var i = 0; i < fb_shows_friends.length; i++){
         var index = $.inArray(fb_shows_friends[i],result.showList);
         if(index != -1 && $.inArray(fb_shows_friends[i],sharedShows) == -1){
@@ -333,7 +336,74 @@ function createTable(page){
           }
       }
 
+      //creating user shows from FB
+      for(var i = 0; i < fb_shows_user.length; i++){
+        var index = $.inArray(fb_shows_user[i],result.showList);
+        if(index != -1 && $.inArray(fb_shows_user[i],userFBShows) == -1){
+          if(userFBShows instanceof Array){
+            userFBShows.push(fb_shows_user[i]);
+          }
+          else{
+            userFBShows = fb_shows_user[i];
+          }
+        }
+      }
+          
+      for(var ss = 0; ss < userFBShows.length; ss+=2){
+        var row = table.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        row.className = "row";
+      
+        var showID = -1;
+        if(result.showList !=undefined){
+          showID = $.inArray(userFBShows[ss],result.showList);
+        }
 
+        var bento = ($("<div>").addClass("bento titlelink").attr("id",userFBShows[ss]));
+        bento.html("<br><center><a class='titlelink' id = '" + userFBShows[ss] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss] + "'>" + userFBShows[ss] + "</a></center>");
+        bento.appendTo(cell1);
+        //var box = ($("<div>").addClass("boxF"));
+
+          ($("<div>").addClass("boxUF").append(
+            $("<div>").addClass("innerboxF").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
+          
+        if(userFBShows.length % 2 != 0 && ss == userFBShows.length-1){
+            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "45px" ));
+            bento2.appendTo(cell2);          
+
+          ($("<div>").addClass("boxUF").append(
+            $("<div>").addClass("innerboxF").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  temp + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
+          }
+          else{
+
+          var showID = -1;
+          if(result.showList !=undefined){
+            showID = $.inArray(userFBShows[ss+1],result.showList);
+          }
+            var bento2 = ($("<div>").addClass("bento titlelink").attr("id",userFBShows[ss+1]));
+            bento2.html("<br><center><a class='titlelink' id = '" + userFBShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss+1] + "'>" + userFBShows[ss+1] + "</a></center>");
+            bento2.appendTo(cell2);
+
+            ($("<div>").addClass("boxUF").append(
+             $("<div>").addClass("innerboxF").append(
+              $("<div>").addClass("colRoll").append(
+                $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
+          }
+      }
+
+
+      //creating from stored user list
       if(result.shows == null || result.shows == undefined){
         ($('#helper').text("Add shows to your list with the search bar above!"/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
           ));
