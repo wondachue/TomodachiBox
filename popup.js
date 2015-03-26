@@ -265,7 +265,7 @@ function createTable(page){
   if(page == "home"){    
     table.innerHTML = "";
     
-    var temp = "http://media1.popsugar-assets.com/files/2014/02/18/159/n/28443503/5945b74bba9e1117_shutterstock_105361820.jpg.xxxlarge/i/Calories-Sushi.jpg";
+    var temp = "plum.png";
 
     storage.get(function(result){ 
       
@@ -313,7 +313,7 @@ function createTable(page){
             $("<div>").addClass("colRoll").append(
               $("<div>").addClass("roll").html(
                   "<br><br><img src ='" + 
-                  temp + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
+                  temp + "' class='img-circle sushi2' ></img>"))))).appendTo(bento2);
           }
           else{
 
@@ -377,7 +377,7 @@ function createTable(page){
             $("<div>").addClass("colRoll").append(
               $("<div>").addClass("roll").html(
                   "<br><br><img src ='" + 
-                  temp + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
+                  temp + "' class='img-circle sushi2' ></img>"))))).appendTo(bento2);
           }
           else{
             var showID = -1;
@@ -504,6 +504,8 @@ function showPage(showname,result, showID){
   col2_1.className = "col-lg-12 boxU";
   var divRoll = document.createElement("div");
   divRoll.className = "colRoll";
+  var chop = document.createElement("div");
+  chop.className = "chops";
   var divBox = document.createElement("div");
   divBox.className = "innerbox";
   var img_show = document.createElement("img");
@@ -532,6 +534,7 @@ function showPage(showname,result, showID){
   title_show.appendChild(col1_1);
   divRoll.appendChild(img_show);
   divBox.appendChild(divRoll);
+  divBox.appendChild(chop);
   col2_1.appendChild(divBox);
   row2.appendChild(col2_1);
   row3.appendChild(col3_1);

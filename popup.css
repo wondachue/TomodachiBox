@@ -4,9 +4,10 @@ h4{
 }
 #bg{
   background-color: white;
-  width: 430px;
+  width: 460px;
   height: 300px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 .title{
   font-weight: bold;
@@ -14,7 +15,22 @@ h4{
 .rollIcon{
   background-image: url("roll.gif");
 }
+.titlelink{
+  color: white;
+}
 .sushi{
+  width: 75px;
+  height: 75px;
+  padding: 3px;
+  border: 3px solid orange;
+  background-color: orange;
+}
+.chops{
+  background-image: url("soy.jpg");
+  background-repeat: no-repeat;
+  width:100%;
+}
+.sushi2{
   width: 75px;
   height: 75px;
   padding: 3px;
@@ -45,6 +61,7 @@ h4{
 
   border-radius: 70px;
   box-shadow: 0px 0px 20px black;
+  cursor: pointer;
 }
 .boxU{
   background: -webkit-linear-gradient(70deg, black, red, #f2f0ee);
@@ -55,6 +72,7 @@ h4{
   background: -webkit-linear-gradient(70deg, black, blue, #f2f0ee);
   border: 3px solid black;
   box-shadow: inset 0px 0px 12px blue;   
+
 }
 .innerbox{
   background: -webkit-linear-gradient(#990021, black);
