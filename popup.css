@@ -62,6 +62,12 @@ h4{
   margin: 7px;
   padding: 2px;
 }
+.innerboxF{
+  background: -webkit-linear-gradient(#000066, black);
+  border: 10px solid #000066;
+  margin: 7px;
+  padding: 2px;
+}
 .roll{
   padding: 5px;
   width: 100%;

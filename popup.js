@@ -298,7 +298,7 @@ function createTable(page){
         //var box = ($("<div>").addClass("boxF"));
 
           ($("<div>").addClass("boxF").append(
-            $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("innerboxF").append(
             $("<div>").addClass("colRoll").append(
               $("<div>").addClass("roll").html(
                   "<br><br><img src ='" + 
@@ -309,7 +309,7 @@ function createTable(page){
             bento2.appendTo(cell2);          
 
           ($("<div>").addClass("boxF").append(
-            $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("innerboxF").append(
             $("<div>").addClass("colRoll").append(
               $("<div>").addClass("roll").html(
                   "<br><br><img src ='" + 
@@ -325,7 +325,7 @@ function createTable(page){
             bento2.html("<br><center><a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + sharedShows[ss+1] + "</a></center>");
             bento2.appendTo(cell2);
             ($("<div>").addClass("boxF").append(
-             $("<div>").addClass("innerbox").append(
+             $("<div>").addClass("innerboxF").append(
               $("<div>").addClass("colRoll").append(
                 $("<div>").addClass("roll").html(
                   "<br><br><img src ='" + 
