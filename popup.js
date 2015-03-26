@@ -1,5 +1,6 @@
 var numAnime = 0;
 var nameNum = 0;
+var fbsuAdded = false;
 var today = new Date();
 
 //Handling of the show list
@@ -13,6 +14,8 @@ var fb_shows_friends = [];
 //For storage and user show list
 var storage = chrome.storage.local;
 var usershows = [];
+
+var userFBShows = [];
 var sharedShows = [];
 
 //Storage for the episode dates
@@ -247,8 +250,9 @@ if (window.addEventListener){
 function createTable(page){
   var bg = document.getElementById('bg');
   bg.innerHTML = "";  
+  var err = document.getElementById('error');
+  err.innerHTML = "";
 
-  $('<p id="helper">').appendTo('#bg');
   $('<table id="show_grid">').appendTo('#bg');
 
   var table = document.getElementById("show_grid");
@@ -260,6 +264,63 @@ function createTable(page){
 
     storage.get(function(result){ 
       
+      //Loading FB User Shows
+      for(var i = 0; i < fb_shows_user.length; i++){
+        var index = $.inArray(fb_shows_user[i],result.showList);
+        if(index != -1 && $.inArray(fb_shows_user[i],sharedShows) == -1){
+          if(sharedShows instanceof Array){
+            sharedShows.push(fb_shows_friends[i]);
+          }
+          else{
+            sharedShows = fb_shows_friends[i];
+          }
+        }
+      }
+
+      for(var ss = 0; ss < sharedShows.length; ss+=2){
+        var row = table.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        row.className = "row";
+      
+        var showID = -1;
+        if(result.showList !=undefined){
+          showID = $.inArray(sharedShows[ss],result.showList);
+        }
+
+        ($("<div>").addClass("boxF").append(
+          $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<a class='titlelink' id = '" + sharedShows[ss] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss] + "'>" + 
+                  sharedShows[ss] + "</a><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi'></img>"))))).appendTo(cell1);
+          
+        if(sharedShows.length % 2 != 0 && ss == sharedShows.length-1){
+            ($("<div>").addClass("boxF").append(
+              $("<div>").addClass("innerbox").append(
+                $("<div>").addClass("colRoll").append(
+                  $("<div>").addClass("roll").html("<img src ='" + 
+                    temp + "' class='img-circle sushi'>"))))).appendTo(cell2); 
+          }
+          else{
+
+          var showID = -1;
+          if(result.showList !=undefined){
+            showID = $.inArray(sharedShows[ss+1],result.showList);
+          }
+            ($("<div>").addClass("boxF").append(
+              $("<div>").addClass("innerbox").append(
+                $("<div>").addClass("colRoll").append(
+                  $("<div>").addClass("roll").html(
+                    "<a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + 
+                    sharedShows[ss+1] + "</a><br><img src ='" + 
+                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).appendTo(cell2);
+          }
+      }
+
+
+      //Loading Friend shows
       for(var i = 0; i < fb_shows_friends.length; i++){
         var index = $.inArray(fb_shows_friends[i],result.showList);
         if(index != -1 && $.inArray(fb_shows_friends[i],sharedShows) == -1){
@@ -271,7 +332,7 @@ function createTable(page){
           }
         }
       }
-          
+
       for(var ss = 0; ss < sharedShows.length; ss+=2){
         var row = table.insertRow(0);
         var cell1 = row.insertCell(0);
@@ -316,10 +377,8 @@ function createTable(page){
 
 
       if(result.shows == null || result.shows == undefined){
-        ($('#helper').text("Add shows to your list with the search bar above!"/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
+        ($('#error').text("Add shows to your list with the search bar above!"/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
           ));
-        
-      }
       else{
         var size = result.shows.length;
 
@@ -371,9 +430,14 @@ function createTable(page){
 
       addLinkOnClick(result.shows); 
 
+      ($("<div id='btn1' style='display : none'>").addClass("spBtn").append(
+        $("<button id='spAdd'>").html('<span class="glyphicon glyphicon-plus" style="vertical-align:middle"> </span> to Box'))).appendTo('#bg');
+      ($("<div id='btn2' style='display : none'>").addClass("spBtn").append(
+        $("<button id='spRemove'>").html('<span class="glyphicon glyphicon-minus" style="vertical-align:middle"> </span> from Box'))).appendTo('#bg');
+
     });
   }
-  if(page == "help"){
+  else if(page == "help"){
     
     ($('<h4>').text("Why are some boxes Red and some boxes Blue?")).appendTo('#bg');
     ($('<p>').text("The boxes that are Red contain the shows specifically in your box. The boxes that you see as Blue are shows that your Facebook friends have liked if you connected to Facebook!")).appendTo('#bg');
@@ -386,6 +450,9 @@ function createTable(page){
     
     //($('<h4>').text()).appendTo(bg);
     //($('<p>').text()).appendTo(bg);
+  }
+  else if(page == "upcoming"){
+    err.innerHTML = "";
   }
   else{
     //console.log("something horrible happened to get here @_@");
@@ -501,17 +568,21 @@ document.addEventListener('DOMContentLoaded', function() {
     var upcoming = document.getElementById('upcoming');
     var toHome = document.getElementById('toHome');
     var helpPls = document.getElementById('helpPls');
+    var spAdd = document.getElementById('spAdd');
+    var spRemove = document.getElementById('spRemove');
+
     var fb_button = document.getElementById('fb_post_button');
 
     addToBox.addEventListener('click', function() {
 
       /*
-                    var hiddenElement = document.createElement('a');
-              hiddenElement.href = 'data:attachment/text,' + encodeURI(images);
-              hiddenElement.target = '_blank';
-              hiddenElement.download = 'myFile.txt';
-              hiddenElement.click();
-              */
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:attachment/text,' + encodeURI(images);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'myFile.txt';
+        hiddenElement.click();
+        */
+
         chrome.browserAction.setIcon({path: 'icon.png'});
 
         var show = document.getElementById('shows').value;
@@ -519,7 +590,7 @@ document.addEventListener('DOMContentLoaded', function() {
         //reload twitter button with new show
         reloadTwitterButton(show);
 
-        //This is where the new page will be loaded from!----------------------
+        //This is where the new page will be loaded from!
         document.getElementById('shows').value = "";
 
         //Handles adding the show to the user's list
@@ -530,7 +601,8 @@ document.addEventListener('DOMContentLoaded', function() {
     upcoming.addEventListener('click', function() {
           console.log("The user wants to view upcoming page...");
 
-          document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
+          createTable("upcoming");
+          //document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
                   
     });
 
@@ -546,6 +618,17 @@ document.addEventListener('DOMContentLoaded', function() {
         createTable("help");
     }); 
 
+    spAdd.addEventListener('click',function() {
+        var title = document.getElementsByTagName('.spTitle').text();
+
+
+        addShowToBox(title,false);
+    });
+
+    spRemove.addEventListener('click',function(){
+
+    });
+
     fb_button.addEventListener('click',function() {
         postFB();
     });   
@@ -554,6 +637,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function addShowToBox(show,fromHome){
   storage.get(function(result){
+
 
         //makes sure it is actually a show and then adds it to the user's list
         var isShow = false;
@@ -576,8 +660,10 @@ function addShowToBox(show,fromHome){
         }
 
         //last check should make it unique?       
+        var err = document.getElementById("error");
+
         if(isShow && $.inArray(show,result["shows"]) == -1){     
-                    
+            err.innerHTML = "";
             if(typeof(result["shows"]) !== 'undefined' && result["shows"] instanceof Array) {
               result["shows"].push(show);
             }
@@ -590,7 +676,9 @@ function addShowToBox(show,fromHome){
             }
         }
         else{
-          console.log("Get here by putting in a show already on your list or something that isn't a show! We need to notify the user somehow.");
+          err.innerHTML = "Either the show you tried to add was already in your TomodachiBox, or TomodachiBox does not know about it. Please try again!";
+          //($('<p id="helper">').text()).appendTo('#bg');
+          //console.log("Get here by putting in a show already on your list or something that isn't a show! We need to notify the user somehow.");
         }
         });
 }

@@ -11,6 +11,11 @@ h4{
 .title{
   font-weight: bold;
 }
+#error{
+  font-size: .85em;
+  font-weight: bold;
+  color: red;
+}
 .rollIcon{
   background-image: url("roll.gif");
 }
