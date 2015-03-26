@@ -63,12 +63,21 @@ function loadEpisodeData()
 					if(show_title != undefined && show_title.length != 0){
 						var show_arr = show_title.split("/");
 						var name = show_arr[3].replace(/_/g, ' ');
-						show_date[nameNum] = name;
+						name = name.replace(/%3A/g, ":");
+						name = name.replace(/%21/g, "!");
+						name = name.replace(/%E2%80%83/g, " ''");
+						//name = name.replace(/ /g, ":");
+						//name = name.replace(/ /g, "");
+						name = name.replace(/%28/g, "(");
+						name = name.replace(/%29/g, ")");
+						name = name.replace(/%40/g, "@");
+						//name = name.replace(/ /g, ":");
+						//name = name.replace(/ /g, "");
 						day.push(name);
-						console.log("the show title is: " + show_date[nameNum]);
-						nameNum++;
+						console.log("the show title is: " + name);
 					}
 				});
+				console.log("month is being popped.")
 				month[date] = day;
 			});
 			console.log("month is:");
@@ -83,9 +92,8 @@ function loadEpisodeData()
 				//
 			}); //maybe? as a start? im not sure
 
-			
-			createTable("upcoming");
 			*/
+			createTable("upcoming");
       }
       
     }
@@ -152,7 +160,6 @@ function getShows(){
     else{
       getFileData("store.txt");
       getFileData("imageStore.txt");
-	  getEpisodeDates();
     }
   });
  
@@ -411,6 +418,41 @@ function createTable(page){
     //($('<h4>').text()).appendTo(bg);
     //($('<p>').text()).appendTo(bg);
   }
+  if(page == "upcoming"){
+	  //get the date
+	  //translate to /year/month/day format
+	  //compare against dates in the month[] array
+	  //have the date and the showlist for the day be presented on the page.
+	  var new_date = new Date();
+	  var day_check = new_date.getDate();
+	  var month_check = new_date.getMonth()+1;
+	  var year_check = new_date.getFullYear();
+	
+	  
+	  var bg =  document.getElementById("bg");
+	  bg.innerHTML = "";
+	  ($('<table>').attr("id","cont")).appendTo('#bg');
+	  
+	  var tbl = document.getElementById("cont");
+	  console.log("month is: ");
+	  console.log(month);
+	  for(var d = day_check+2; d > day_check-1; d--){
+		  console.log("d is:" +d);
+		  var date_check = "/"+year_check+"/"+month_check+"/"+d;
+		  for(var i = 0; i < month[date_check].length; i++){
+					
+					var row0 = tbl.insertRow(0);
+					var cell0a = row0.insertCell(0);
+					var cell0b = row0.insertCell(1);
+					row0.className = "row";
+					
+					cell0a.innerHTML = (month[date_check][i]);
+					cell0b.innerHTML = (date_check);
+					//(month[date_check][i]).appendTo(cell0a);
+					//(date_check).appendTo(cell0b);
+		  }
+	  }
+  }
   else{
     //console.log("something horrible happened to get here @_@");
   }
@@ -619,7 +661,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     upcoming.addEventListener('click', function() {
           console.log("The user wants to view upcoming page...");
-
+			getEpisodeDates();
           document.getElementById('bg').innerHTML = "<b>Upcoming Shows Page Here</b>";
                   
     });
