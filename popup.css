@@ -96,6 +96,9 @@ h4{
   box-shadow: inset 0px 0px 12px blue;   
 
 }
+.crunch{
+  background-image: url("crunchy.ico");
+}
 .innerbox{
   background: -webkit-linear-gradient(#990021, black);
   border: 10px solid #4d0011;

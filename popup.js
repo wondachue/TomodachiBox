@@ -562,6 +562,32 @@ function addLinkOnClick(showArray){
     }
   }
 }
+ 
+function addLinkToWebsite(){
+ // classthing = document.getElementBy("crunch");
+  var webs = $('.crunch');
+  for(var i = 0; i < webs.length; i++){
+  var web = webs[i];
+  //idpls = classthing.value;
+  //for(elem in idpls){
+    //console.log("elem is: " + elem + " : " + idpls[elem]);
+  //}
+  //for(var i = 0; i < webs.length; i++){
+    //var web = webs[i];
+    web.onclick = function(){
+
+
+    //classthing.onclick = function(){
+       //Do something with chrome Tabs
+       //To get the id you stored, the show name
+       //just use: this.id
+      var urlNew = "http://www.crunchyroll.com/" + this.id;
+      console.log("Attempting to open a tab for " + this.id);
+      chrome.tabs.create({url : urlNew});
+
+    }
+  }
+}
 
 function addSPBtnOnClick(){
   var btns = $('.spBtn');
@@ -684,13 +710,39 @@ function showPage(showname,result, showID){
   show_table.appendChild(row2);
   show_table.appendChild(row3);
 
-  space.appendChild(show_table);
-
+  space.appendChild(show_table, space);
+  loadCrunchy(showname, space);
   descrips = "";
   ongoing = "";
   whereToWatch = [];
 
   addSPBtnOnClick();
+}
+function loadCrunchy(showname, space)
+{
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        xmlhttp=new XMLHttpRequest();
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+            var crunch_page = xmlhttp.responseText;
+            var watchme = document.createElement("div");
+            watchme.className = "row";
+            watchme.innerHTML = "<button class='crunch btn btn-warning btn-lg' id='"+ showname + "'><span ></span>Watch me on crunchyroll!</button>";
+            space.appendChild(watchme); 
+            addLinkToWebsite();
+      }
+      else if(xmlhttp.status==404){
+        console.log("no crunchy :(");
+      }
+      
+    }
+    xmlhttp.open("GET","http://www.crunchyroll.com/" + showname,true);
+    xmlhttp.send();
 }
 function loadShowData(showname,result, showID)
 {
