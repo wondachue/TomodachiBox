@@ -285,20 +285,28 @@ function createTable(page){
           showID = $.inArray(sharedShows[ss],result.showList);
         }
 
-        ($("<div>").addClass("boxF").append(
-          $("<div>").addClass("innerbox").append(
+        var bento = ($("<div>").addClass("bento titlelink").attr("id",sharedShows[ss]));
+        bento.html("<br><center><a class='titlelink' id = '" + sharedShows[ss] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss] + "'>" + sharedShows[ss] + "</a></center>");
+        bento.appendTo(cell1);
+        //var box = ($("<div>").addClass("boxF"));
+
+          ($("<div>").addClass("boxF").append(
+            $("<div>").addClass("innerbox").append(
             $("<div>").addClass("colRoll").append(
               $("<div>").addClass("roll").html(
-                  "<a class='titlelink' id = '" + sharedShows[ss] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss] + "'>" + 
-                  sharedShows[ss] + "</a><br><img src ='" + 
-                  result.imageList[showID] + "' class='img-circle sushi'></img>"))))).appendTo(cell1);
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
           
         if(sharedShows.length % 2 != 0 && ss == sharedShows.length-1){
-            ($("<div>").addClass("boxF").append(
-              $("<div>").addClass("innerbox").append(
-                $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").html("<img src ='" + 
-                    temp + "' class='img-circle sushi'>"))))).appendTo(cell2); 
+            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "45px" ));
+            bento2.appendTo(cell2);          
+
+          ($("<div>").addClass("boxF").append(
+            $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  temp + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
           }
           else{
 
@@ -306,13 +314,15 @@ function createTable(page){
           if(result.showList !=undefined){
             showID = $.inArray(sharedShows[ss+1],result.showList);
           }
+            var bento2 = ($("<div>").addClass("bento titlelink").attr("id",sharedShows[ss+1]));
+            bento2.html("<br><center><a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + sharedShows[ss+1] + "</a></center>");
+            bento2.appendTo(cell2);
             ($("<div>").addClass("boxF").append(
-              $("<div>").addClass("innerbox").append(
-                $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").html(
-                    "<a class='titlelink' id = '" + sharedShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + sharedShows[ss+1] + "'>" + 
-                    sharedShows[ss+1] + "</a><br><img src ='" + 
-                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).appendTo(cell2);
+             $("<div>").addClass("innerbox").append(
+              $("<div>").addClass("colRoll").append(
+                $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
           }
       }
 
@@ -335,37 +345,49 @@ function createTable(page){
           if(result.showList != null || result.showList != undefined){
             var showID = $.inArray(result.shows[cell],result.showList);
           }
+        var bento = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell]));
+        bento.html("<br><center><a class='titlelink' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + result.shows[cell] + "</a></center>");
+        bento.appendTo(cell1);
+        //var box = ($("<div>").addClass("boxF"));
 
-          cell1.innerHTML = ($("<div>").addClass("boxU").append(
+          ($("<div>").addClass("boxU").append(
             $("<div>").addClass("innerbox").append(
-              $("<div>").addClass("colRoll").append(
-                $("<div>").addClass("roll").html(
-                    "<a class='titlelink' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + 
-                    result.shows[cell] + "</a><br><img src ='" + 
-                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).html();
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
           
           //leaving a trailing empty box if the num of user shows is odd, or filling it as needed~
           //--LEFT UNDONE-- putting the trailing box at the bottom?
+          
           if(size % 2 != 0 && cell == size-1){
-            cell2.innerHTML = ($("<div>").addClass("boxU").append(
-              $("<div>").addClass("innerbox").append(
-                $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").html("<img src ='" + 
-                    temp + "' class='img-circle sushi'>"))))).html(); 
+
+            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "45px" ));
+            bento2.appendTo(cell2);
+
+          ($("<div>").addClass("boxU").append(
+            $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  temp + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
           }
           else{
             var showID = -1;
             if(result.showList != null || result.showList !=undefined){
               showID = $.inArray(result.shows[cell+1],result.showList);
             }
+              var bento2 = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell+1]));
+              bento2.html("<br><center><a class='titlelink' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a></center>");
+              bento2.appendTo(cell2);
+              //var box = ($("<div>").addClass("boxF"));
 
-            cell2.innerHTML = ($("<div>").addClass("boxU").append(
-              $("<div>").addClass("innerbox").append(
-                $("<div>").addClass("colRoll").append(
-                  $("<div>").addClass("roll").html(
-                    "<a class='titlelink' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + 
-                    result.shows[cell+1] + "</a><br><img src ='" + 
-                    result.imageList[showID] + "' class='img-circle sushi'></img>"))))).html();
+                ($("<div>").addClass("boxU").append(
+                  $("<div>").addClass("innerbox").append(
+                  $("<div>").addClass("colRoll").append(
+                    $("<div>").addClass("roll").html(
+                        "<br><br><img src ='" + 
+                        result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
           }
 
         }
@@ -428,7 +450,7 @@ function showPage(showname,result, showID){
   button1.className = "spBtn btn btn-default btn-lg";
   button2.className = "spBtn btn btn-default btn-lg";
   button1.innerHTML = "<div><span class='glyphicon glyphicon-plus' style='vertical-align:middle'> </span> to Bento</div>";
-  button2.innerHTML = "<div><span class='glyphicon glyphicon-minus' style='vertical-align:middle'> </span> to Bento</div>";
+  button2.innerHTML = "<div><span class='glyphicon glyphicon-minus' style='vertical-align:middle'> </span> from Bento</div>";
   button1.style.display = "block"; 
   button1.style.width = "100%";
   button2.style.display = "block";
@@ -437,11 +459,15 @@ function showPage(showname,result, showID){
   var row2 = document.createElement("div");
   row2.className = "row";
   var col2_1 = document.createElement("div");
-  col2_1.className = "col-lg-12";
+  col2_1.className = "col-lg-12 boxU";
+  var divRoll = document.createElement("div");
+  divRoll.className = "colRoll";
+  var divBox = document.createElement("div");
+  divBox.className = "innerbox";
   var img_show = document.createElement("img");
-  img_show.className = "img-rounded";
+  img_show.className = "roll img-circle";
   img_show.src = result.imageList[showID];
-  img_show.style.width = "100%";
+  //img_show.style.width = "100%";
   var row3 = document.createElement("div");
   row3.className = "row";
   var col3_1 = document.createElement("div");
@@ -462,7 +488,9 @@ function showPage(showname,result, showID){
 
   title_text.style.cssFloat = "left";
   title_show.appendChild(col1_1);
-  col2_1.appendChild(img_show);
+  divRoll.appendChild(img_show);
+  divBox.appendChild(divRoll);
+  col2_1.appendChild(divBox);
   row2.appendChild(col2_1);
   row3.appendChild(col3_1);
   row3.appendChild(col3_2);
