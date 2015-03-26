@@ -101,8 +101,11 @@ h4{
   box-shadow: inset 0px 0px 12px blue;   
 
 }
-.crunch{
+.crunchButt{
   background-image: url("crunchy.ico");
+}
+.funButt{
+  background-image: url("fun.png");
 }
 .innerbox{
   background: -webkit-linear-gradient(#990021, black);

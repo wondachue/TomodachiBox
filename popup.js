@@ -728,11 +728,42 @@ function showPage(showname,result, showID){
 
   space.appendChild(show_table, space);
   loadCrunchy(showname.replace(/\s+/g, '-').toLowerCase(), space);
+  loadFun(showname.replace(/\s+/g, '-').toLowerCase(), space);
+
   descrips = "";
   ongoing = "";
   whereToWatch = [];
 
   addSPBtnOnClick();
+}
+function loadFun(showname, space)
+{
+    console.log(showname);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        xmlhttp=new XMLHttpRequest();
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+            var crunch_page = xmlhttp.responseText;
+            var watchme = document.createElement("div");
+            watchme.className = "row";
+            watchme.innerHTML = "<button class='crunch funButt btn btn-default btn-md' id='"+ showname + "'><span ></span>Watch on Funimation!</button>";
+            document.getElementById("chops").appendChild(watchme); 
+            $('#bg').scrollTop(0)
+            addLinkToWebsite();
+      }
+      else{
+        $('#bg').scrollTop(0)
+        console.log("no fun :(");
+      }
+      
+    }
+    xmlhttp.open("GET","http://www.funimation.com/shows/" + showname + "/home",true);
+    xmlhttp.send();
 }
 function loadCrunchy(showname, space)
 {
@@ -749,12 +780,12 @@ function loadCrunchy(showname, space)
             var crunch_page = xmlhttp.responseText;
             var watchme = document.createElement("div");
             watchme.className = "row";
-            watchme.innerHTML = "<button class='crunch btn btn-warning btn-md' id='"+ showname + "'><span ></span>Watch on Crunchyroll!</button>";
+            watchme.innerHTML = "<button class='crunch crunchButt btn btn-warning btn-md' id='"+ showname + "'><span ></span>Watch on Crunchyroll!</button>";
             document.getElementById("chops").appendChild(watchme); 
             $('#bg').scrollTop(0)
             addLinkToWebsite();
       }
-      else if(xmlhttp.status==404){
+      else{
         $('#bg').scrollTop(0)
         console.log("no crunchy :(");
       }
