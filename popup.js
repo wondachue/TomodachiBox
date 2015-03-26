@@ -5,7 +5,9 @@ var today = new Date();
 //Handling of the show list
 var show_list = [];
 var images = [];
-var descrips = [];
+var descrips = "";
+var ongoing = "";
+var whereToWatch = [];
 
 var fb_shows_user = [];
 var fb_shows_friends = [];
@@ -402,21 +404,79 @@ function addLinkOnClick(showArray){
     }
   }
 }
-
-function makeShowPage(showname){
-
-  storage.get( function(result){
-  var showID = -1;
-  if(result.showList != null || result.showList != undefined){
-    showID = $.inArray(showname,result.showList);
-  }
+function showPage(showname,result, showID){
 
   var space = document.getElementById("bg");
   space.innerHTML = "";
-
-  ($("<h3>").addClass("spTitle").text("Anime Title: " + showname)).appendTo('#bg');
+  var title_show = document.createElement("div");
+  title_show.className = "row page-header";
+  var title_text = document.createElement("div");
+  title_text.className = "col-md-8";
+  title_text.innerHTML = "<h2>" + showname + "</h2>";
   
+
+  var show_table = document.createElement("div");
+  show_table.className = "container";
+  var row1 = document.createElement("div");
+  row1.className = "row";
+  var col1 = document.createElement("div");
+  var col2 = document.createElement("div");
+  var button1 =  document.createElement("button");
+  var button2 = document.createElement("button");
+  button1.id = "spAdd";
+  button2.id = "spRemove";
+  button1.className = "spBtn btn btn-default btn-lg";
+  button2.className = "spBtn btn btn-default btn-lg";
+  button1.innerHTML = "<div><span class='glyphicon glyphicon-plus' style='vertical-align:middle'> </span> to Bento</div>";
+  button2.innerHTML = "<div><span class='glyphicon glyphicon-minus' style='vertical-align:middle'> </span> to Bento</div>";
+  button1.style.display = "block"; 
+  button1.style.width = "100%";
+  button2.style.display = "block";
+  button2.style.width = "100%";
+
+  var row2 = document.createElement("div");
+  row2.className = "row";
+  var col2_1 = document.createElement("div");
+  col2_1.className = "col-lg-12";
+  var img_show = document.createElement("img");
+  img_show.className = "img-rounded";
+  img_show.src = result.imageList[showID];
+  var row3 = document.createElement("div");
+  row3.className = "row";
+  var col3_1 = document.createElement("div");
+  var col3_2 = document.createElement("div");
+  col3_1.className =  "col-md-6";
+  col3_2.className =  "col-md-6";
+  col3_1.innerHTML = "Release date : " + ongoing;
+  col3_2.innerHTML = descrips;
+
+  title_show.appendChild(title_text);
+  var col1_1 = document.createElement("div");
+  col1_1.className = "col-md-4";
+  col1.appendChild(button1);
+  col2.appendChild(button2);
+  col1_1.appendChild(col1);
+  col1_1.appendChild(col2);
+  col1_1.style.cssFloat = "right";
+
+  title_text.style.cssFloat = "left";
+  title_show.appendChild(col1_1);
+  col2_1.appendChild(img_show);
+  row2.appendChild(col2_1);
+  row3.appendChild(col3_1);
+  row3.appendChild(col3_2);
+
+  space.appendChild(title_show);
+  show_table.appendChild(row1);
+  show_table.appendChild(row2);
+  show_table.appendChild(row3);
+
+  space.appendChild(show_table);
+
   //Show page content
+  /*
+    ($("<h3>").addClass("spTitle row").text(showname)).appendTo('#bg');
+
   ($('<table>').attr("id","spTble")).appendTo('#bg');
 
   var tbl = document.getElementById("spTble");
@@ -424,6 +484,7 @@ function makeShowPage(showname){
   var cell0a = row0.insertCell(0);
   var cell0b = row0.insertCell(1);
 
+  row0.className = "row";
   cell0a.innerHTML = ($('<div id="btn1">').addClass("spBtn").append(
     $("<button id='spAdd'>").html('<span class="glyphicon glyphicon-plus" style="vertical-align:middle"> </span> to Box'))).html();
   cell0b.innerHTML = ($('<div id="btn2">').addClass("spBtn").append(
@@ -435,26 +496,22 @@ function makeShowPage(showname){
   var cell1b = row1.insertCell(1);
 
   cell1a.innerHTML = ($("<div>").addClass("spImg").append(
-    $('<img>').addClass("spImgT").attr('src',result.imageList[showID]))).html();
-  cell1b.innerHTML = ($("<div>").addClass("spDesc").text("descripList should populate here")).html();  
+    $('<img>').addClass("spImgT").attr( 'src',result.imageList[showID]  ) ) ).html();
+  cell1b.innerHTML = (  $("<div>").addClass("spDesc").text(descrips) ).html();  
 
   var row2 = tbl.insertRow(2);
   var cell2a = row2.insertCell(0);
   var cell2b = row2.insertCell(1);  
 
-  cell2a.innerHTML = ($("<div>").addClass("spRelInfo").text("Release date info here")).html();
-  cell2b.innerHTML = ($("<div>").addClass("spSocial").text("Social media connection aspects here?")).html();
+  cell2a.innerHTML = (  $("<div>").addClass("spRelInfo").text("Release date : " + ongoing) ).html();
+  cell2b.innerHTML = (  $("<div>").addClass("spSocial").text("Social media connection aspects here?") ).html();
+  */
 
-  });
+  descrips = "";
+  ongoing = "";
+  whereToWatch = [];
 }
-
-function getAllAnimeYears(){
-  reloadTwitterButton("Hamtaro");
-  getShows();
-  createTable("home"); 
-}
-
-function loadShowData(this_num)
+function loadShowData(showname,result, showID)
 {
     var xmlhttp;
     if (window.XMLHttpRequest)
@@ -467,15 +524,39 @@ function loadShowData(this_num)
       {
             var wiki_page = xmlhttp.responseText;
             var wiki_infobox = $(".infobox", wiki_page);
-            images[this_num] = "http:" + $("img", wiki_infobox).attr('src');
             var wiki_descrip = $("#mw-content-text", wiki_page);
-            descrips[this_num] = $("p", wiki_descrip).first();         
+            //descrips = $("p:first", wiki_descrip).text();
+            
+            descrips = $("h2",wiki_descrip).filter(":contains('Plot')").next().text();
+            var anime_info = $("tr",wiki_infobox).filter(":contains('Anime television series')").nextUntil().filter(":contains('Original run')").text();
+            //var show_info_date = $("tr",anime_info).filter(":contains('Original run')");
+            ongoing = anime_info;
+            console.log(anime_info);
+            whereToWatch = [];   
+            showPage(showname,result, showID);   
       }
       
     }
-    xmlhttp.open("GET","http://en.wikipedia.org/wiki/" + show_list[this_num],true);
+    xmlhttp.open("GET","http://en.wikipedia.org/wiki/" + showname,true);
     xmlhttp.send();
 }
+function makeShowPage(showname){
+
+  storage.get( function(result){
+    var showID = -1;
+    if(result.showList != null || result.showList != undefined){
+      showID = $.inArray(showname,result.showList);
+    }
+    loadShowData(showname,result, showID);
+  });
+}
+
+function getAllAnimeYears(){
+  reloadTwitterButton("Hamtaro");
+  getShows();
+  createTable("home"); 
+}
+
 
 function reloadTwitterButton(show){
 
