@@ -502,11 +502,21 @@ function createTable(page){
 		  
 		  var bg =  document.getElementById("bg");
 		  bg.innerHTML = "";
-		  ($('<table>').attr("id","cont")).appendTo('#bg');
-		  
+		  //
+		  var tbDiv = document.createElement("div");
+		  tbDiv.className = "board";
+		  tbDiv.id = "thisBG";
+		  var head = document.createElement("h3");
+		  head.innerHTML = "<center>Menu: UPCOMING SPECIALS</center>";
+		  tbDiv.appendChild(head);
+			bg.appendChild(tbDiv);
+		  ($('<table>').attr("id","cont")).appendTo('#thisBG');
 		  var tbl = document.getElementById("cont");
+
+		  //tbl.className= "board";
 		  console.log("month is: ");
 		  console.log(month);
+		  
 		  for(var d = day_check+2; d > day_check-1; d--){
 			  console.log("d is:" +d);
 			  var date_check = "/"+year_check+"/"+month_check+"/"+d;
@@ -545,6 +555,8 @@ function createTable(page){
 					}
 				  }
 		  }
+		  
+		  
 	  });
   }
   else{
