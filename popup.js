@@ -11,7 +11,7 @@ var whereToWatch = [];
 
 var fb_shows_user = [];
 var fb_shows_friends = [];
-
+var fb_message = "TomodachiBox is testing! Connect to friends through our anime connection chrome extension.";
 //For storage and user show list
 var storage = chrome.storage.local;
 var usershows = [];
@@ -173,6 +173,10 @@ $(document).ready(function() {
   getAllAnimeYears();
 });
 function postFB(){
+  fb_message = document.getElementById('comment').value;
+  postFB2(fb_message);
+}
+function postFB2(this_message){
     var xmlhttp;
     if (window.XMLHttpRequest)
     {
@@ -184,9 +188,14 @@ function postFB(){
       {
             var fbjson = xmlhttp.responseText;
             var data_fb = JSON.parse( fbjson );
+            var button = document.getElementById("fb_post_button");
+            button.innerHTML = "See your post in the group!";
+            var urlNew = "https://www.facebook.com/groups/1571041476486236/";
+            chrome.tabs.create({url : urlNew});
+
       }
     }
-    xmlhttp.open("POST","https://graph.facebook.com/v2.2/me/feed?access_token=" + fb_accessToken + "&message=hello&caption=world&description=test",true);
+    xmlhttp.open("POST","https://graph.facebook.com/v2.2/1571041476486236/feed?access_token=" + fb_accessToken + "&message=" + encodeURI(this_message) + "&caption=tomodachibox&description=tomodachibox_message",true);
     xmlhttp.send();
 }
 function getFBInfo(){
@@ -743,7 +752,14 @@ function showPage(showname,result, showID){
   col3_1.className =  "col-md-6";
   col3_2.className =  "col-md-6";
   col3_1.innerHTML = "<small>" + ongoing + "</small><br><br>";
-  col3_2.innerHTML = descrips;
+  fb_message = "Watch " + showname + " with me! @TomodachiBox";
+  //col3_2.innerHTML = "<div class='col-xs-3'><div class='fb-share-button' data-href='https://developers.facebook.com/docs/plugins/' data-layout='button_count'><button id='fb_post_button' class='btn btn-sm btn-default'>Post to TomodachiBox Group</button></div></div>";
+  col3_2.innerHTML = "<div class='form-group'><label for='send_message'>Message:</label><textarea class='form-control' rows='2' id='comment'>"+ fb_message + "</textarea><button id='fb_post_button' type='submit' class='btn btn-default'>Post to TomodachiBox Group</button> ";
+  var row4 = document.createElement("div");
+  var col4 = document.createElement("div");
+  row4.className = "row";
+  col4.className = "col-md-6";
+  col4.innerHTML = descrips;
 
   title_show.appendChild(title_text);
   var col1_1 = document.createElement("div");
@@ -763,11 +779,12 @@ function showPage(showname,result, showID){
   row2.appendChild(col2_1);
   row3.appendChild(col3_1);
   row3.appendChild(col3_2);
-
+  row4.appendChild(col4);
   space.appendChild(title_show);
   show_table.appendChild(row1);
   show_table.appendChild(row2);
   show_table.appendChild(row3);
+  show_table.appendChild(row4);
 
   space.appendChild(show_table, space);
   loadCrunchy(showname.replace(/\s+/g, '-').replace(/\//g, '').replace(/\./g, '').toLowerCase(), space);
@@ -776,7 +793,10 @@ function showPage(showname,result, showID){
   descrips = "";
   ongoing = "";
   whereToWatch = [];
-
+  var fb_button = document.getElementById('fb_post_button');
+  fb_button.addEventListener('click',function() {
+      postFB();
+  });
   addSPBtnOnClick();
 }
 function loadFun(showname, space)
@@ -794,12 +814,12 @@ function loadFun(showname, space)
             var crunch_page = xmlhttp.responseText;
             var watchme = document.createElement("div");
             watchme.className = "row";
-            watchme.innerHTML = "<button class='btn btn-warning btn-md' id='"+ showname + "'><span ></span>Watch on Funimation!</button>";
+            watchme.innerHTML = "<button class='btn funButt btn-warning btn-md' id='"+ showname + "'><span ></span>Watch on Funimation!</button>";
             document.getElementById("chops").appendChild(watchme); 
             $('#bg').scrollTop(0);
             addLinkToWebsite();
       }
-      else if(xmlhttp.readyState==4 && xmlhttp.status==404){
+      else if(xmlhttp.readyState==4 && ((xmlhttp.status==404) || (xmlhttp.status==520))){
         var crunch_page = xmlhttp.responseText;
         var watchme = document.createElement("div");
         watchme.className = "row";
@@ -833,7 +853,7 @@ function loadCrunchy(showname, space)
             $('#bg').scrollTop(0);
             addLinkToWebsite();
       }
-      else if(xmlhttp.readyState==4 && xmlhttp.status==404){
+      else if(xmlhttp.readyState==4 && ((xmlhttp.status==404) || (xmlhttp.status==520))){
         $('#bg').scrollTop(0);
         var crunch_page = xmlhttp.responseText;
         var watchme = document.createElement("div");
@@ -923,7 +943,7 @@ function reloadTwitterButton(show){
   var link = document.createElement('a');
   link.setAttribute('href', 'https://twitter.com/int?screen_name=');
   link.setAttribute('class', 'twitter-mention-button');
-  link.setAttribute("data-text" , "Hey there tomodachi, watch anime with me! #tomodachibox" );
+  link.setAttribute("data-text" , "Hey there tomodachi, follow my anime likes by friending me on Facebook at: ! @TomodachiBox" );
   link.setAttribute("data-size" ,"large");
   //link.setAttribute("data-via" ,"tomodachibox") ;
   //link.setAttribute("data-url" ,"http://en.wikipedia.org/wiki/" + show);
@@ -945,7 +965,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var likesBento = document.getElementById('likesBento');
     var friendsBento = document.getElementById('friendsBento');
 
-    //var fb_button = document.getElementById('fb_post_button');
+    var fb_button = document.getElementById('fb_post_button');
+    var tomodachi = document.getElementById('follow');
 
     addToBox.addEventListener('click', function() {
 
@@ -963,7 +984,9 @@ document.addEventListener('DOMContentLoaded', function() {
         addShowToBox(show,true);
         
     });
-
+    tomodachi.addEventListener('click', function(){
+      //https://twitter.com/TomodachiBox;
+    });
    upcoming.addEventListener('click', function() {
           //console.log("The user wants to view upcoming page...");
 			    getEpisodeDates();
@@ -992,10 +1015,10 @@ document.addEventListener('DOMContentLoaded', function() {
         createTable("homeFriends")
     });
 
-    /** ----May come in a later version!----
+
     fb_button.addEventListener('click',function() {
         postFB();
-    });*/   
+    });
 
 });
 
