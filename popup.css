@@ -6,6 +6,13 @@
 h4{
   font-weight: bold;
 }
+.headerT{
+  text-align: center;
+}
+.err{
+  font-size: .75em;
+  color: red;
+}
 #bg{
   background-color: white;
   width: 470px;
@@ -41,6 +48,7 @@ h4{
 }
 .titlelink{
   width: 230px;
+  cursor: pointer;
 }
 .sushi{
   width: 75px;
@@ -87,10 +95,8 @@ h4{
   height: 150px;
   border: 3px solid white;
   background-image: url("nori.jpg");
-
   border-radius: 70px;
   box-shadow: 0px 0px 20px black;
-  cursor: pointer;
 }
 .boxU{
   background: -webkit-linear-gradient(70deg, black, red, #f2f0ee);

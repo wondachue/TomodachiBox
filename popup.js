@@ -83,23 +83,11 @@ function loadEpisodeData()
 				//console.log("month is being popped.")
 				month[date] = day;
 			});
-			//console.log("month is:");
-			//console.log(month);
-		//console.log("the show title is: " + show_date);
-			/*
-			$("thead",date_table)(function(){
-				var h2 = $("h2", this);
-				var date = $("a", h2).attr("href");
-				console.log(date);
-				//do stuff to get variables
-				//
-			}); //maybe? as a start? im not sure
-
-			*/
 			createTable("upcoming");
       }
-      
+            
     }
+
     xmlhttp.open("GET","http://animecalendar.net/" + this_year + "/" + this_month,true);
     xmlhttp.send();
 }
@@ -257,22 +245,186 @@ if (window.addEventListener){
 
 
 function createTable(page){
+  var err = document.getElementById('error');
+  err.innerHTML = "";
   var bg = document.getElementById('bg');
   bg.innerHTML = "";  
 
   $('<p id="helper">').appendTo('#bg');
-  $('<table id="show_grid">').appendTo('#bg');
-
-  var table = document.getElementById("show_grid");
 
   if(page == "home"){    
-    table.innerHTML = "";
-    
+    bg.innerHTML = "";
+
+    ($('<h4>').addClass('headerT').text('Personal Bento')).appendTo('#bg');
+
+    $('<table id="show_grid">').appendTo('#bg');
+    var table = document.getElementById("show_grid");
+
     var temp = "plum.png";
 
     storage.get(function(result){ 
       
-      //creating friend shows
+      //creating from stored user list
+      if(result.shows == null || result.shows == undefined){
+        ($('#helper').html("<b>Add shows to your TomodachiBox with the search bar above!</b><br>Clicking the rolls in your TomodachiBox will take you to show details."/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
+          ));
+      }
+      else{
+        var size = result.shows.length;
+
+        for(var cell = 0; cell < size; cell +=2){
+          var row = table.insertRow(0);
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          row.className = "row";
+          
+          var showID = -1;
+          if(result.showList != null || result.showList != undefined){
+            var showID = $.inArray(result.shows[cell],result.showList);
+          }
+        var bento = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell]));
+        bento.html("<br><center><a class='texterf' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + result.shows[cell] + "</a></center>");
+        bento.appendTo(cell1);
+        //var box = ($("<div>").addClass("boxF"));
+
+          ($("<div>").addClass("boxU").append(
+            $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
+          
+          //leaving a trailing empty box if the num of user shows is odd, or filling it as needed~
+          //--LEFT UNDONE-- putting the trailing box at the bottom?
+          
+          if(size % 2 != 0 && cell == size-1){
+
+            var bento2 = ($("<div>").addClass("bento").css( "padding-top", "60px" ));
+            bento2.appendTo(cell2);
+
+          ($("<div>").addClass("boxU").append(
+            $("<div>").addClass("innerbox").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  temp + "' class='img-circle sushi2' ></img>"))))).appendTo(bento2);
+          }
+          else{
+            var showID = -1;
+            if(result.showList != null || result.showList !=undefined){
+              showID = $.inArray(result.shows[cell+1],result.showList);
+            }
+              var bento2 = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell+1]));
+              bento2.html("<br><center><a class='texterf' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a></center>");
+              bento2.appendTo(cell2);
+              //var box = ($("<div>").addClass("boxF"));
+
+                ($("<div>").addClass("boxU").append(
+                  $("<div>").addClass("innerbox").append(
+                  $("<div>").addClass("colRoll").append(
+                    $("<div>").addClass("roll").html(
+                        "<br><br><img src ='" + 
+                        result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
+          }
+
+        }
+      }
+
+      addLinkOnClick(); 
+
+    });
+  }
+  else if(page == "homeLikes"){
+    bg.innerHTML = "";
+
+    ($('<h4>').addClass('headerT').text('Facebook Likes Bento')).appendTo('#bg');
+    $('<table id="show_grid">').appendTo('#bg');
+    var table = document.getElementById("show_grid");
+    
+    var temp = "plum.png";
+
+    storage.get(function(result){
+      
+      for(var i = 0; i < fb_shows_user.length; i++){
+        var index = $.inArray(fb_shows_user[i],result.showList);
+        if(index != -1 && $.inArray(fb_shows_user[i],userFBShows) == -1){
+          if(userFBShows instanceof Array){
+            userFBShows.push(fb_shows_user[i]);
+          }
+          else{
+            userFBShows = fb_shows_user[i];
+          }
+        }
+      }
+          
+      for(var ss = 0; ss < userFBShows.length; ss+=2){
+        var row = table.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        row.className = "row";
+      
+        var showID = -1;
+        if(result.showList !=undefined){
+          showID = $.inArray(userFBShows[ss],result.showList);
+        }
+
+        var bento = ($("<div>").addClass("bento titlelink").attr("id",userFBShows[ss]));
+        bento.html("<br><center><a class='texterf' id = '" + userFBShows[ss] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss] + "'>" + userFBShows[ss] + "</a></center>");
+        bento.appendTo(cell1);
+        //var box = ($("<div>").addClass("boxF"));
+
+          ($("<div>").addClass("boxUF").append(
+            $("<div>").addClass("innerboxF2").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
+          
+        if(userFBShows.length % 2 != 0 && ss == userFBShows.length-1){
+            var bento2 = ($("<div>").addClass("bento").css( "padding-top", "60px" ));
+            bento2.appendTo(cell2);          
+
+          ($("<div>").addClass("boxUF").append(
+            $("<div>").addClass("innerboxF2").append(
+            $("<div>").addClass("colRoll").append(
+              $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  temp + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
+          }
+          else{
+
+          var showID = -1;
+          if(result.showList !=undefined){
+            showID = $.inArray(userFBShows[ss+1],result.showList);
+          }
+            var bento2 = ($("<div>").addClass("bento titlelink").attr("id",userFBShows[ss+1]));
+            bento2.html("<br><center><a class='texterf' id = '" + userFBShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss+1] + "'>" + userFBShows[ss+1] + "</a></center>");
+            bento2.appendTo(cell2);
+
+            ($("<div>").addClass("boxUF").append(
+             $("<div>").addClass("innerboxF2").append(
+              $("<div>").addClass("colRoll").append(
+                $("<div>").addClass("roll").html(
+                  "<br><br><img src ='" + 
+                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
+          }
+      }
+      addLinkOnClick();
+    });
+
+     
+  }
+  else if(page == "homeFriends"){
+    bg.innerHTML = "";
+    
+    ($('<h4>').addClass('headerT').text("Facebook Friend's Bento")).appendTo('#bg');
+
+    $('<table id="show_grid">').appendTo('#bg');
+    var table = document.getElementById("show_grid");
+    
+    var temp = "plum.png";
+
+    storage.get(function(result){
       for(var i = 0; i < fb_shows_friends.length; i++){
         var index = $.inArray(fb_shows_friends[i],result.showList);
         if(index != -1 && $.inArray(fb_shows_friends[i],sharedShows) == -1){
@@ -336,160 +488,31 @@ function createTable(page){
                   result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
           }
       }
-
-      //creating user shows from FB
-      for(var i = 0; i < fb_shows_user.length; i++){
-        var index = $.inArray(fb_shows_user[i],result.showList);
-        if(index != -1 && $.inArray(fb_shows_user[i],userFBShows) == -1){
-          if(userFBShows instanceof Array){
-            userFBShows.push(fb_shows_user[i]);
-          }
-          else{
-            userFBShows = fb_shows_user[i];
-          }
-        }
-      }
-          
-      for(var ss = 0; ss < userFBShows.length; ss+=2){
-        var row = table.insertRow(0);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        row.className = "row";
-      
-        var showID = -1;
-        if(result.showList !=undefined){
-          showID = $.inArray(userFBShows[ss],result.showList);
-        }
-
-        var bento = ($("<div>").addClass("bento titlelink").attr("id",userFBShows[ss]));
-        bento.html("<br><center><a class='texterf' id = '" + userFBShows[ss] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss] + "'>" + userFBShows[ss] + "</a></center>");
-        bento.appendTo(cell1);
-        //var box = ($("<div>").addClass("boxF"));
-
-          ($("<div>").addClass("boxUF").append(
-            $("<div>").addClass("innerboxF2").append(
-            $("<div>").addClass("colRoll").append(
-              $("<div>").addClass("roll").html(
-                  "<br><br><img src ='" + 
-                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
-          
-        if(userFBShows.length % 2 != 0 && ss == userFBShows.length-1){
-            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "60px" ));
-            bento2.appendTo(cell2);          
-
-          ($("<div>").addClass("boxUF").append(
-            $("<div>").addClass("innerboxF2").append(
-            $("<div>").addClass("colRoll").append(
-              $("<div>").addClass("roll").html(
-                  "<br><br><img src ='" + 
-                  temp + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
-          }
-          else{
-
-          var showID = -1;
-          if(result.showList !=undefined){
-            showID = $.inArray(userFBShows[ss+1],result.showList);
-          }
-            var bento2 = ($("<div>").addClass("bento titlelink").attr("id",userFBShows[ss+1]));
-            bento2.html("<br><center><a class='texterf' id = '" + userFBShows[ss+1] + "' href='http://en.wikipedia.org/wiki/" + userFBShows[ss+1] + "'>" + userFBShows[ss+1] + "</a></center>");
-            bento2.appendTo(cell2);
-
-            ($("<div>").addClass("boxUF").append(
-             $("<div>").addClass("innerboxF2").append(
-              $("<div>").addClass("colRoll").append(
-                $("<div>").addClass("roll").html(
-                  "<br><br><img src ='" + 
-                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
-          }
-      }
-
-
-      //creating from stored user list
-      if(result.shows == null || result.shows == undefined){
-        ($('#helper').html("<b>Add shows to your TomodachiBox with the search bar above!</b><br>Clicking the rolls in your TomodachiBox will take you to show details."/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
-          ));
-        
-      }
-      else{
-        var size = result.shows.length;
-
-        for(var cell = 0; cell < size; cell +=2){
-          var row = table.insertRow(0);
-          var cell1 = row.insertCell(0);
-          var cell2 = row.insertCell(1);
-          row.className = "row";
-          
-          var showID = -1;
-          if(result.showList != null || result.showList != undefined){
-            var showID = $.inArray(result.shows[cell],result.showList);
-          }
-        var bento = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell]));
-        bento.html("<br><center><a class='texterf' id = '" + result.shows[cell] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell] + "'>" + result.shows[cell] + "</a></center>");
-        bento.appendTo(cell1);
-        //var box = ($("<div>").addClass("boxF"));
-
-          ($("<div>").addClass("boxU").append(
-            $("<div>").addClass("innerbox").append(
-            $("<div>").addClass("colRoll").append(
-              $("<div>").addClass("roll").html(
-                  "<br><br><img src ='" + 
-                  result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
-          
-          //leaving a trailing empty box if the num of user shows is odd, or filling it as needed~
-          //--LEFT UNDONE-- putting the trailing box at the bottom?
-          
-          if(size % 2 != 0 && cell == size-1){
-
-            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "60px" ));
-            bento2.appendTo(cell2);
-
-          ($("<div>").addClass("boxU").append(
-            $("<div>").addClass("innerbox").append(
-            $("<div>").addClass("colRoll").append(
-              $("<div>").addClass("roll").html(
-                  "<br><br><img src ='" + 
-                  temp + "' class='img-circle sushi2' ></img>"))))).appendTo(bento2);
-          }
-          else{
-            var showID = -1;
-            if(result.showList != null || result.showList !=undefined){
-              showID = $.inArray(result.shows[cell+1],result.showList);
-            }
-              var bento2 = ($("<div>").addClass("bento titlelink").attr("id",result.shows[cell+1]));
-              bento2.html("<br><center><a class='texterf' id = '" + result.shows[cell+1] + "' href='http://en.wikipedia.org/wiki/" + result.shows[cell+1] + "'>" + result.shows[cell+1] + "</a></center>");
-              bento2.appendTo(cell2);
-              //var box = ($("<div>").addClass("boxF"));
-
-                ($("<div>").addClass("boxU").append(
-                  $("<div>").addClass("innerbox").append(
-                  $("<div>").addClass("colRoll").append(
-                    $("<div>").addClass("roll").html(
-                        "<br><br><img src ='" + 
-                        result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento2);
-          }
-
-        }
-      }
-
-      addLinkOnClick(result.shows); 
-
+      addLinkOnClick();    
     });
+
   }
-  if(page == "help"){
+  else if(page == "help"){
     
     ($('<h4>').text("Why are some boxes different colors? White, Blue, and Red?")).appendTo('#bg');
     ($('<p>').text("TomodachiBox shows you three bentos! The bento with Red boxes is your personal bento (you add and remove titles from this one). If you are connected with Facebook, you may also see a bento with White boxes (titles you have liked on Facebook) and a bento with Blue boxes (titles your Facebook friends have liked).")).appendTo('#bg');
-    
+
+    ($('<h4>').text("Why do some of the titles on the Upcoming page have stars next to them and appear at the top?")).appendTo(bg);
+    ($('<p>').text("This title is in your bento!")).appendTo(bg);
+
     ($('<h4>').text("Why do some boxes only have a sushi with a circle of roe in them?")).appendTo('#bg');
     ($('<p>').text("This sushi roll is a placeholder for a title. Add more titless to your TomodachiBox to make it disappear!")).appendTo(bg);
     
-    ($('<h4>').text("What do I do if something seems drastically wrong???")).appendTo('#bg');
-    ($('<p>').text("Please! We urge you to contact us (the development team) as soon as possible! We don't bite, and we would be happy to help you get your TomodachiBox back in perfect, tasty shape as soon as possible. :) ")).appendTo('#bg');
+    ($('<h4>').text("What do I do if something seems drastically wrong?")).appendTo('#bg');
+    ($('<p>').text("Please! We urge you to contact us (the development team) as soon as possible! We don't bite, and we would be happy to help you get your TomodachiBox back in perfect, tasty shape as soon as possible.")).appendTo('#bg');
     
+    ($('<h4>').text("Why do some of the titles on the Upcoming page have stars next to them and appear at the top?")).appendTo(bg);
+    ($('<p>').text("This title is in your bento!")).appendTo(bg);
+
     //($('<h4>').text()).appendTo(bg);
     //($('<p>').text()).appendTo(bg);
   }
-      if(page == "upcoming"){
+  else if(page == "upcoming"){
 	  //get the date
 	  //translate to /year/month/day format
 	  //compare against dates in the month[] array
@@ -579,7 +602,7 @@ function createTable(page){
 
 }
 
-function addLinkOnClick(showArray){
+function addLinkOnClick(){
   var links = $('.titlelink');
   for(var i = 0; i < links.length; i++){
     var link = links[i];
@@ -915,9 +938,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var addToBox = document.getElementById('addToBox');
     var upcoming = document.getElementById('upcoming');
-    var toHome = document.getElementById('toHome');
+
     var helpPls = document.getElementById('helpPls');
-    var fb_button = document.getElementById('fb_post_button');
+
+    var myBento = document.getElementById('myBento');
+    var likesBento = document.getElementById('likesBento');
+    var friendsBento = document.getElementById('friendsBento');
+
+    //var fb_button = document.getElementById('fb_post_button');
 
     addToBox.addEventListener('click', function() {
 
@@ -943,17 +971,26 @@ document.addEventListener('DOMContentLoaded', function() {
                   
     });
 
-    toHome.addEventListener('click',function() {
-        //console.log("The user wants to return to home page...");
-
-        createTable("home");
-    });
-
     helpPls.addEventListener('click',function() {
         //console.log("The user wants to get help!...");
 
         createTable("help");
     }); 
+
+    myBento.addEventListener('click', function(){
+
+        createTable("home");
+    });
+
+    likesBento.addEventListener('click', function(){
+
+        createTable("homeLikes");
+    });
+
+    friendsBento.addEventListener('click', function(){
+
+        createTable("homeFriends")
+    });
 
     /** ----May come in a later version!----
     fb_button.addEventListener('click',function() {
@@ -986,7 +1023,8 @@ function addShowToBox(show,fromHome){
         }
 
         //last check should make it unique?       
-        if(isShow && $.inArray(show,result["shows"]) == -1){     
+        if(isShow){
+          if($.inArray(show,result["shows"]) == -1){     
                     
             if(typeof(result["shows"]) !== 'undefined' && result["shows"] instanceof Array) {
               result["shows"].push(show);
@@ -998,9 +1036,17 @@ function addShowToBox(show,fromHome){
             if(fromHome){
               createTable("home");
             }
+          }
+          else{
+            var err = document.getElementById('error');
+          err.innerHTML = "<span class='err'>The show you tried to add is already in your box! Click the 'My Bento' button to see your Bento box.</span>";
+          console.log("Get here by putting in a show already on your list!");  
+          }
         }
         else{
-          console.log("Get here by putting in a show already on your list or something that isn't a show! We need to notify the user somehow.");
+          var err = document.getElementById('error');
+          err.innerHTML = "<span class='err'>The show you tried is not in our show listing. Please check your spelling or select another title!</span>";
+          console.log("Get here by putting in something that isn't a show we have!");
         }
         });
 }
