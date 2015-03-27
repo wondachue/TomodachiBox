@@ -230,6 +230,11 @@ font-size: 1.5em;
  left:0;
  display:none;
 }
+#fb_post_button{
+  color: white;
+  background-color: blue;
+
+}
 #fb_login_button { 
     width: 80px; 
 }
