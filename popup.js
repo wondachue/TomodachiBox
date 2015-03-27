@@ -771,12 +771,12 @@ function loadFun(showname, space)
             var crunch_page = xmlhttp.responseText;
             var watchme = document.createElement("div");
             watchme.className = "row";
-            watchme.innerHTML = "<button class='btn btn-warning btn-md' id='"+ showname + "'><span ></span>Watch on Funimation!</button>";
+            watchme.innerHTML = "<button class='btn funButt btn-warning btn-md' id='"+ showname + "'><span ></span>Watch on Funimation!</button>";
             document.getElementById("chops").appendChild(watchme); 
             $('#bg').scrollTop(0);
             addLinkToWebsite();
       }
-      else if(xmlhttp.readyState==4 && xmlhttp.status==404){
+      else if(xmlhttp.readyState==4 && ((xmlhttp.status==404) || (xmlhttp.status==520))){
         var crunch_page = xmlhttp.responseText;
         var watchme = document.createElement("div");
         watchme.className = "row";
@@ -810,7 +810,7 @@ function loadCrunchy(showname, space)
             $('#bg').scrollTop(0);
             addLinkToWebsite();
       }
-      else if(xmlhttp.readyState==4 && xmlhttp.status==404){
+      else if(xmlhttp.readyState==4 && ((xmlhttp.status==404) || (xmlhttp.status==520))){
         $('#bg').scrollTop(0);
         var crunch_page = xmlhttp.responseText;
         var watchme = document.createElement("div");
@@ -900,7 +900,7 @@ function reloadTwitterButton(show){
   var link = document.createElement('a');
   link.setAttribute('href', 'https://twitter.com/int?screen_name=');
   link.setAttribute('class', 'twitter-mention-button');
-  link.setAttribute("data-text" , "Hey there tomodachi, watch anime with me! #tomodachibox" );
+  link.setAttribute("data-text" , "Hey there tomodachi, follow my anime likes by friending me on Facebook at: ! @TomodachiBox" );
   link.setAttribute("data-size" ,"large");
   //link.setAttribute("data-via" ,"tomodachibox") ;
   //link.setAttribute("data-url" ,"http://en.wikipedia.org/wiki/" + show);
@@ -918,7 +918,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var toHome = document.getElementById('toHome');
     var helpPls = document.getElementById('helpPls');
     var fb_button = document.getElementById('fb_post_button');
-
+    var tomodachi = document.getElementById('follow');
     addToBox.addEventListener('click', function() {
 
         //chrome.browserAction.setIcon({path: 'icon.png'});
@@ -935,7 +935,9 @@ document.addEventListener('DOMContentLoaded', function() {
         addShowToBox(show,true);
         
     });
-
+    tomodachi.addEventListener('click', function(){
+      //https://twitter.com/TomodachiBox;
+    });
    upcoming.addEventListener('click', function() {
           //console.log("The user wants to view upcoming page...");
 			    getEpisodeDates();
