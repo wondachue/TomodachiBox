@@ -517,7 +517,7 @@ function createTable(page){
     
     ($('<h4>').text("Why do some of the titles on the Upcoming page have stars next to them and appear at the top?")).appendTo(bg);
     ($('<p>').text("This title is in your bento!")).appendTo(bg);
-
+    $('#bg').scrollTop(0);
     //($('<h4>').text()).appendTo(bg);
     //($('<p>').text()).appendTo(bg);
   }
