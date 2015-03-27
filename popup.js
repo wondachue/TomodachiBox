@@ -275,8 +275,8 @@ function createTable(page){
       
       //creating from stored user list
       if(result.shows == null || result.shows == undefined){
-        ($('#helper').html("<b>Add shows to your TomodachiBox with the search bar above!</b><br>Clicking the rolls in your TomodachiBox will take you to show details."/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
-          ));
+        ($('<p>').html("<b>Add shows to your TomodachiBox with the search bar above!</b><br>Clicking the rolls in your TomodachiBox will take you to show details."/*<br><br>Important Notes:<br>The inital load requires an internet connection to function properly, and there might be some lag on this initial opening depending on your internet connection speed. We apologize for the trouble :("*/
+          )).appendTo('#bg');
       }
       else{
         var size = result.shows.length;
@@ -1013,11 +1013,6 @@ document.addEventListener('DOMContentLoaded', function() {
     friendsBento.addEventListener('click', function(){
 
         createTable("homeFriends")
-    });
-
-
-    fb_button.addEventListener('click',function() {
-        postFB();
     });
 
 });
