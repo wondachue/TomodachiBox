@@ -3,6 +3,10 @@
     font-family: myFirstFont;
     src: url(last.ttf);
 }
+#honorthesloth{
+  font-family: myFirstFont;
+  font-size: 4em;
+}
 h4{
   font-weight: bold;
 }
@@ -29,7 +33,7 @@ h4{
 .texterf{
   color: white;
   font-family: myFirstFont;
-  font-size: 1.5em;
+  font-size: 2em;
   display:inline-block;
   width: 200px;
   overflow: hidden;
@@ -257,4 +261,24 @@ font-size: 1.5em;
  top:0;
  left:0;
  display:none;
+}
+#myBento{
+  background-color: #990021;
+  color: white;
+  margin:4px;
+}
+#friendsBento{
+  background-color: #000066;
+  color: white;
+  margin:4px;
+}
+#likesBento{
+  background-color: #545454;
+  color: white;
+  margin:4px;
+}
+#upcoming{
+  background-color: black;
+  color: white;
+  margin:4px;
 }

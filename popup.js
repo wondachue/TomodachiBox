@@ -308,7 +308,7 @@ function createTable(page){
           
           if(size % 2 != 0 && cell == size-1){
 
-            var bento2 = ($("<div>").addClass("bento").css( "padding-top", "60px" ));
+            var bento2 = ($("<div>").addClass("bento").css( "padding-top", "70px" ));
             bento2.appendTo(cell2);
 
           ($("<div>").addClass("boxU").append(
@@ -390,7 +390,7 @@ function createTable(page){
                   result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
           
         if(userFBShows.length % 2 != 0 && ss == userFBShows.length-1){
-            var bento2 = ($("<div>").addClass("bento").css( "padding-top", "60px" ));
+            var bento2 = ($("<div>").addClass("bento").css( "padding-top", "70px" ));
             bento2.appendTo(cell2);          
 
           ($("<div>").addClass("boxUF").append(
@@ -470,7 +470,7 @@ function createTable(page){
                   result.imageList[showID] + "' class='img-circle sushi' ></img>"))))).appendTo(bento);
           
         if(sharedShows.length % 2 != 0 && ss == sharedShows.length-1){
-            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "60px" ));
+            var bento2 = ($("<div>").addClass("bento titlelink").css( "padding-top", "70px" ));
             bento2.appendTo(cell2);          
 
           ($("<div>").addClass("boxF").append(
@@ -558,7 +558,7 @@ function createTable(page){
 						var row0 = tbl.insertRow(0);
 						var cell0a = row0.insertCell(0);
 						var cell0b = row0.insertCell(1);
-						cell0b.style.width = "50px";
+						cell0b.style.width = "100px";
 						row0.className = "row";
 						var date_thing = month_check+"."+d;
 					if($.inArray(month[date_check][i],result.showList) != -1){
@@ -586,7 +586,7 @@ function createTable(page){
 							var row0 = tbl.insertRow(0);
 							var cell0a = row0.insertCell(0);
 							var cell0b = row0.insertCell(1);
-							cell0b.style.width = "50px";
+							cell0b.style.width = "100px";
 							row0.className = "row";
 							var date_thing = month_check+"."+b;
                if($.inArray(month[date_check][h],result.showList) != -1){
@@ -601,6 +601,14 @@ function createTable(page){
 					}
 				  }
 		  }
+      var rowh = tbl.insertRow(0);
+      var cell0ah = rowh.insertCell(0);
+      var cell0bh = rowh.insertCell(1);
+      cell0ah.style.textDecoration = "underline overline";
+      cell0bh.style.textDecoration = "underline overline";
+      rowh.className = "row";
+      cell0ah.innerHTML = "Newest Anime";
+      cell0bh.innerHTML = "Date";
 		  addLinkToUpcomings();
 		  
 	  });
@@ -986,6 +994,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     tomodachi.addEventListener('click', function(){
       //https://twitter.com/TomodachiBox;
+      chrome.tabs.create({url : 'https://twitter.com/TomodachiBox'});
     });
    upcoming.addEventListener('click', function() {
           //console.log("The user wants to view upcoming page...");
@@ -1014,6 +1023,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         createTable("homeFriends")
     });
+
 
 });
 
